@@ -5,6 +5,11 @@
 /.pnp
 .pnp.js
 
+# Variables d'environnement — NE JAMAIS COMMITTER
+.env
+.env.local.example
+# .env.production est commité volontairement (contient uniquement l'URL publique de l'API)
+
 # testing
 /coverage
 
