@@ -15,7 +15,8 @@ interface FilterState {
   priceRange: string;
   beds: string;
   baths: string;
-  status?: string; // status est optionnel
+  status: string;
+  landlord: string;
 }
 
 interface PropertyFiltersProps {

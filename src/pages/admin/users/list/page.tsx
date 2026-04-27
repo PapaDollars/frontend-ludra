@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSession } from 'next-auth/react';
+import { useSafeSession } from '@/hooks/useSafeSession';
 import { Users, UserPlus, Mail, Phone, Calendar, Shield, Edit, Trash2, Search, Filter, MoreVertical } from 'lucide-react';
 
 import { adminService } from '@/services/admin.service';
@@ -18,7 +18,7 @@ import UserDetailModal from '@/components/common/modals/UserDetailModal';
 
 export default function UsersPage() {
   const { t } = useTranslation();
-  const { data: session } = useSession();
+  const { data: session } = useSafeSession();
 
   const [users, setUsers] = useState<any[]>([]);
   const [total, setTotal] = useState(0);

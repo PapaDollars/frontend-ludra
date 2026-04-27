@@ -12,14 +12,14 @@ import { Card } from '@/components/common/ui/Card';
 import { Button } from '@/components/common/ui/Button';
 import { favoriteService } from '@/services/favorite.service';
 import Pagination from '@/components/common/_others/Pagination';
-import { useSession } from 'next-auth/react';
+import { useSafeSession } from '@/hooks/useSafeSession';
 
 const ITEMS_PER_PAGE = 12;
 
 export default function PropertiesListPage() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
-  const { data: session } = useSession();
+  const { data: session } = useSafeSession();
 
   const [properties, setProperties] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
@@ -35,6 +35,8 @@ export default function PropertiesListPage() {
     priceRange: searchParams?.get('priceRange') || '',
     beds: '',
     baths: '',
+    status: '',
+    landlord: '',
   });
 
   const fetchProperties = useCallback(async () => {
@@ -85,7 +87,7 @@ export default function PropertiesListPage() {
   };
 
   const resetFilters = () => {
-    setFilters({ search: '', location: '', type: '', priceRange: '', beds: '', baths: '' });
+    setFilters({ search: '', location: '', type: '', priceRange: '', beds: '', baths: '', status: '', landlord: '' });
     setCurrentPage(1);
   };
 

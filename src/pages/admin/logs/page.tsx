@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSafeSession } from '@/hooks/useSafeSession';
 import { History, User, Building2, CheckCircle, XCircle, ShieldOff, Shield, Trash2, Edit, ArrowLeft, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { Card } from '@/components/common/ui/Card';
@@ -35,7 +35,7 @@ const ACTION_FILTERS = [
 ];
 
 export default function AdminLogsPage() {
-  const { data: session } = useSession();
+  const { data: session } = useSafeSession();
   const [logs, setLogs] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);

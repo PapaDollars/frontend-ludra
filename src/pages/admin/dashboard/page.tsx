@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSession } from 'next-auth/react';
+import { useSafeSession } from '@/hooks/useSafeSession';
 import { Home, TrendingUp, Users, DollarSign, Building2, PieChart, MapPin, History } from 'lucide-react';
 
 import { adminService } from '@/services/admin.service';
@@ -13,7 +13,7 @@ import Link from 'next/link';
 
 export default function DashboardAdminPage() {
   const { t } = useTranslation();
-  const { data: session } = useSession();
+  const { data: session } = useSafeSession();
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 

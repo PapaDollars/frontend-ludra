@@ -3,13 +3,13 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSafeSession } from '@/hooks/useSafeSession';
 import AnimatedBackground from '@/components/common/_others/AnimatedBackground';
 import RegisterForm from '@/components/auth/RegisterForm';
 import URL from '@/utilis/url/url_front';
 
 export default function RegisterPage() {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSafeSession();
   const router = useRouter();
 
   useEffect(() => {

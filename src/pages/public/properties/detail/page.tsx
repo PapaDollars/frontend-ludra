@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSafeSession } from '@/hooks/useSafeSession';
 import { useTranslation } from 'react-i18next';
 import {
   MapPin, Star, House, Bath, Square, Wifi, Car,
@@ -25,7 +25,7 @@ import ContactConfirmModal from '@/components/common/modals/ContactConfirmModal'
 export default function PropertyDetailPage() {
   const params = useParams();
   const { t } = useTranslation();
-  const { data: session } = useSession();
+  const { data: session } = useSafeSession();
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [property, setProperty] = useState<any>(null);

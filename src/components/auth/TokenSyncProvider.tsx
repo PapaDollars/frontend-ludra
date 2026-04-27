@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useSession } from 'next-auth/react';
 import { setTokens } from '@/lib/api';
+import { useSafeSession } from '@/hooks/useSafeSession';
 
 export default function TokenSyncProvider({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSafeSession();
   const accessToken = (session as any)?.accessToken as string | undefined;
   const refreshToken = (session as any)?.refreshToken as string | undefined;
 

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { useSession, signOut } from 'next-auth/react';
+import { useState, useRef, useEffect } from 'react';
+import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,21 +11,23 @@ import { Card } from '@/components/common/ui/Card';
 import { Button } from '@/components/common/ui/Button';
 import api from '@/lib/api';
 import URL from '@/utilis/url/url_front';
+import { useSafeSession } from '@/hooks/useSafeSession';
 
 const schema = z.object({
   fullName: z.string().min(3, 'Le nom complet est requis (prénom + nom)').refine(
     (v) => v.trim().split(/\s+/).length >= 2,
     'Entrez votre prénom ET votre nom de famille'
   ),
-  confirmed: z.literal(true, {
-    errorMap: () => ({ message: 'Vous devez confirmer que les informations correspondent à votre CNI' }),
-  }),
+  confirmed: z.boolean().refine(
+    (value) => value === true,
+    'Vous devez confirmer que les informations correspondent à votre CNI'
+  ),
 });
 
 type FormData = z.infer<typeof schema>;
 
 export default function BecomeLandlordPage() {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSafeSession();
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -40,6 +42,22 @@ export default function BecomeLandlordPage() {
     defaultValues: { fullName: session?.user?.name || '' },
   });
 
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.replace(URL.auth.login);
+      return;
+    }
+
+    if (session?.user?.role === 'landlord') {
+      router.replace(URL.landlord.dashboard);
+      return;
+    }
+
+    if (session?.user?.role === 'admin') {
+      router.replace(URL.admin.dashboard);
+    }
+  }, [status, session?.user?.role, router]);
+
   if (status === 'loading') {
     return (
       <div className="min-h-screen pt-20 flex items-center justify-center">
@@ -48,18 +66,7 @@ export default function BecomeLandlordPage() {
     );
   }
 
-  if (status === 'unauthenticated') {
-    router.push(URL.auth.login);
-    return null;
-  }
-
-  if (session?.user?.role === 'landlord') {
-    router.push(URL.landlord.dashboard);
-    return null;
-  }
-
-  if (session?.user?.role === 'admin') {
-    router.push(URL.admin.dashboard);
+  if (status === 'unauthenticated' || session?.user?.role === 'landlord' || session?.user?.role === 'admin') {
     return null;
   }
 
@@ -67,7 +74,6 @@ export default function BecomeLandlordPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     setAvatar(file);
-    setAvatarPreview(URL.createObjectURL ? URL.createObjectURL(file) : '');
     // Use FileReader for preview
     const reader = new FileReader();
     reader.onload = (ev) => setAvatarPreview(ev.target?.result as string);

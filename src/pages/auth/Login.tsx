@@ -2,14 +2,15 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession, signIn, getSession } from 'next-auth/react';
+import { signIn, getSession } from 'next-auth/react';
 import { setTokens } from '@/lib/api';
 import AnimatedBackground from '@/components/common/_others/AnimatedBackground';
 import LoginForm from '@/components/auth/LoginForm';
 import URL from '@/utilis/url/url_front';
+import { useSafeSession } from '@/hooks/useSafeSession';
 
 export default function LoginPage() {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSafeSession();
   const router = useRouter();
 
   useEffect(() => {

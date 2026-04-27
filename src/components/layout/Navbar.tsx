@@ -5,13 +5,14 @@ import { useTranslation } from 'react-i18next';
 import { Menu, X, Home, Heart, Info, Phone, LogIn, UserPlus, LogOut, User, Settings, Building2, Bell, CheckCheck } from 'lucide-react';
 import { Button } from '@/components/common/ui/Button';
 import Link from "next/link";
-import { useSession, signOut } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import URL from '@/utilis/url/url_front';
 import { notificationService, type Notification } from '@/services/notification.service';
+import { useSafeSession } from '@/hooks/useSafeSession';
 
 const Navbar = memo(() => {
   const { t } = useTranslation();
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSafeSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);

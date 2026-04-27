@@ -12,7 +12,7 @@ export const adminService = {
   },
 
   // Users
-  async getUsers(params: { role?: string; isActive?: boolean; search?: string; page?: number } = {}) {
+  async getUsers(params: { role?: string; isActive?: boolean; search?: string; page?: number; limit?: number } = {}) {
     const qs = Object.entries(params)
       .filter(([, v]) => v !== undefined && v !== '')
       .map(([k, v]) => `${k}=${v}`)
@@ -30,7 +30,7 @@ export const adminService = {
   },
 
   // Properties
-  async getAllProperties(params: { status?: string; isActive?: boolean; page?: number } = {}) {
+  async getAllProperties(params: { status?: string; isActive?: boolean; page?: number, limit?: number } = {}) {
     const qs = Object.entries(params)
       .filter(([, v]) => v !== undefined && v !== '')
       .map(([k, v]) => `${k}=${v}`)

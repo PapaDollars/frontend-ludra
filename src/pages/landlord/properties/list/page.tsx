@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Home } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import { useSafeSession } from '@/hooks/useSafeSession';
 
 import { landlordService } from '@/services/landlord.service';
 import { propertyService } from '@/services/property.service';
@@ -20,7 +20,7 @@ import URL from '@/utilis/url/url_front';
 
 export default function MyPropertiesPage() {
   const { t } = useTranslation();
-  const { data: session } = useSession();
+  const { data: session } = useSafeSession();
 
   const [properties, setProperties] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
@@ -32,7 +32,7 @@ export default function MyPropertiesPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const [filters, setFilters] = useState({ search: '', location: '', type: '', priceRange: '', beds: '', baths: '', status: '' });
+  const [filters, setFilters] = useState({ search: '', location: '', type: '', priceRange: '', beds: '', baths: '', status: '', landlord: '' });
 
   const fetchProperties = useCallback(async () => {
     setLoading(true);
@@ -116,7 +116,7 @@ export default function MyPropertiesPage() {
           <Card className="p-4 text-center bg-white border-l-4 border-l-gray-400"><div className="text-2xl font-bold">{stats.inactive}</div><div className="text-gray-600 text-sm">Désactivées</div></Card>
         </div>
 
-        <PropertyFilters filters={filters} onFiltersChange={setFilters} onResetFilters={() => { setFilters({ search: '', location: '', type: '', priceRange: '', beds: '', baths: '', status: '' }); setCurrentPage(1); }} showStatusFilter={true} searchPlaceholder="my_properties.search_placeholder" showViewToggle={true} viewMode={viewMode} onViewModeChange={setViewMode} />
+        <PropertyFilters filters={filters} onFiltersChange={setFilters} onResetFilters={() => { setFilters({ search: '', location: '', type: '', priceRange: '', beds: '', baths: '', status: '', landlord: '' }); setCurrentPage(1); }} showStatusFilter={true} searchPlaceholder="my_properties.search_placeholder" showViewToggle={true} viewMode={viewMode} onViewModeChange={setViewMode} />
 
         <div className="mb-6 flex justify-between items-center">
           <p className="text-gray-600">{t('my_properties.results_count', { count: total })}</p>

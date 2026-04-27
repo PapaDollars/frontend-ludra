@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Heart, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
+import { useSafeSession } from '@/hooks/useSafeSession';
 
 import { favoriteService } from '@/services/favorite.service';
 import PropertyCard from '@/components/common/card/PropertyCard';
@@ -15,7 +15,7 @@ import Pagination, { ITEMS_PER_PAGE } from '@/components/common/_others/Paginati
 
 export default function FavoritesPage() {
   const { t } = useTranslation();
-  const { data: session } = useSession();
+  const { data: session } = useSafeSession();
   const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);

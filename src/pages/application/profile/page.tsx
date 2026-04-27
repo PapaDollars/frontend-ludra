@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSafeSession } from '@/hooks/useSafeSession';
 import { useTranslation } from 'react-i18next';
 import ProfessionalProfile from '@/components/common/_others/ProfessionalProfile';
 import { authService } from '@/services/auth.service';
 
 export default function ProfilPage() {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSafeSession();
   const { t } = useTranslation();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);

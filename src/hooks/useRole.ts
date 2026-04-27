@@ -1,8 +1,8 @@
 // hooks/useRole.ts
-import { useSession } from 'next-auth/react';
+import { useSafeSession } from '@/hooks/useSafeSession';
 
 export function useRole() {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSafeSession();
 
   return {
     user: session?.user,

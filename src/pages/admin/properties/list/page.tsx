@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSession } from 'next-auth/react';
+import { useSafeSession } from '@/hooks/useSafeSession';
 import { Plus, Home, Building2 } from 'lucide-react';
 
 import { adminService } from '@/services/admin.service';
@@ -20,7 +20,7 @@ import Pagination, { ITEMS_PER_PAGE } from '@/components/common/_others/Paginati
 
 export default function AllPropertiesPage() {
   const { t } = useTranslation();
-  const { data: session } = useSession();
+  const { data: session } = useSafeSession();
 
   const [properties, setProperties] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
