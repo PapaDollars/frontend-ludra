@@ -3,9 +3,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { 
-  X, Home, MapPin, DollarSign, Bed, Bath, Square, 
-  Star, Upload, Plus, Globe, Edit 
+import {
+  X, Home, DollarSign, Bed, Bath, Square,
+  Star, Upload, Plus, Edit
 } from 'lucide-react';
 import { Property } from '@/types/property';
 import { Button } from '@/components/common/ui/Button';
@@ -21,7 +21,7 @@ export default function EditPropertyModal({ property, isOpen, onClose, onSave }:
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [images, setImages] = useState<File[]>([]);
+  const [_images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   const [formData, setFormData] = useState<Partial<Property>>({

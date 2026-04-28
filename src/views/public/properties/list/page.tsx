@@ -110,7 +110,7 @@ export default function PropertiesListPage() {
           </p>
           {hasSearchFilters && (
             <div className="mt-4 flex flex-wrap justify-center gap-2">
-              {filters.search && <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">Recherche: "{filters.search}"</span>}
+              {filters.search && <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">Recherche: &ldquo;{filters.search}&rdquo;</span>}
               {filters.location && <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">Ville: {filters.location}</span>}
               {filters.type && <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">Type: {t(`property_types.${filters.type}`)}</span>}
               {filters.priceRange && <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">Prix: {filters.priceRange}</span>}

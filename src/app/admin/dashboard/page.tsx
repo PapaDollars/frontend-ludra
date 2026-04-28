@@ -1,4 +1,4 @@
-import DashboardAdminPage from "@/pages/admin/dashboard/page";
+import DashboardAdminPage from "@/views/admin/dashboard/page";
 
 
 export default function DashboardAdminRoute() {

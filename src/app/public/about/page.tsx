@@ -1,4 +1,4 @@
-import AboutPages from "@/pages/public/about/page";
+import AboutPages from "@/views/public/about/page";
 
 
 export default function AboutRoute() {

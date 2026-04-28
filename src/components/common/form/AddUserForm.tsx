@@ -3,13 +3,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  User, Mail, Phone, MapPin, Calendar, Shield,
-  Upload, X, Plus, Camera
+  User, Mail, Phone, MapPin, Shield,
+  X, Plus, Camera
 } from 'lucide-react';
 import { Button } from '@/components/common/ui/Button';
 import { Card } from '@/components/common/ui/Card';
 import { adminService } from '@/services/admin.service';
-import { AlertCircle } from 'lucide-react';
 
 interface AddUserFormProps {
   onSuccess?: () => void;
@@ -19,7 +18,7 @@ interface AddUserFormProps {
 const AddUserForm = ({ onSuccess, onCancel }: AddUserFormProps) => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [avatar, setAvatar] = useState<File | null>(null);
+  const [_avatar, setAvatar] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string>('');
   const [error, setError] = useState('');
 
@@ -82,8 +81,8 @@ const AddUserForm = ({ onSuccess, onCancel }: AddUserFormProps) => {
         city: formData.city,
       });
       onSuccess?.();
-    } catch (err: any) {
-      setError(err.message || 'Erreur lors de la création de l\'utilisateur');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur lors de la création de l\'utilisateur');
     } finally {
       setIsSubmitting(false);
     }

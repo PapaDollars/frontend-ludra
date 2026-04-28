@@ -1,4 +1,4 @@
-import UsersPage from "@/pages/admin/users/list/page";
+import UsersPage from "@/views/admin/users/list/page";
 
 
 export default function UsersRoute() {

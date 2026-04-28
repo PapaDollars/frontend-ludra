@@ -230,7 +230,7 @@ const PropertyUpgradeCard = memo(({
         {/* Bandeau désactivée */}
         {isInactive && (
           <div className="mb-3 bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-xs text-gray-600 text-center font-medium">
-            ⚫ Cette propriété a été désactivée par l'administration — aucune action n'est possible.
+            ⚫ Cette propriété a été désactivée par l&apos;administration — aucune action n&apos;est possible.
           </div>
         )}
 

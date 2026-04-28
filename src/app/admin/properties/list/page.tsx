@@ -1,4 +1,4 @@
-import AllPropertiesPage from "@/pages/admin/properties/list/page";
+import AllPropertiesPage from "@/views/admin/properties/list/page";
 
 
 export default function AllPropertiesRoute() {

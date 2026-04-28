@@ -27,7 +27,7 @@ export default function ContactConfirmModal({
 
         <h2 className="text-lg font-bold text-gray-900 text-center mb-1">Confirmer la demande</h2>
         <p className="text-sm text-gray-500 text-center mb-5">
-          Pour <span className="font-medium text-gray-700">"{propertyTitle}"</span>
+          Pour <span className="font-medium text-gray-700">&ldquo;{propertyTitle}&rdquo;</span>
         </p>
 
         <div className="bg-gray-50 rounded-xl p-4 mb-5 space-y-3">

@@ -1,4 +1,4 @@
-import Register from '@/pages/auth/Register';
+import Register from '@/views/auth/Register';
 
 
 export default function RegisterRoute() {

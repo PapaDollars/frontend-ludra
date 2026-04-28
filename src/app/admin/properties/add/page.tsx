@@ -1,4 +1,4 @@
-import AddPropertyAdminPage from "@/pages/admin/properties/add/page";
+import AddPropertyAdminPage from "@/views/admin/properties/add/page";
 
 
 export default function AddPropertyAdminRoute() {
