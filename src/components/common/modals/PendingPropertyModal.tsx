@@ -38,7 +38,7 @@ export default function PendingPropertyModal({ propertyId, onClose, onApproved }
       await adminService.updatePropertyStatus(propertyId, { status: 'available' });
       onApproved();
       onClose();
-    } catch (err: any) { alert(err.message); }
+    } catch (err) { alert(err instanceof Error ? err.message : String(err)); }
     finally { setActionLoading(false); }
   };
 
@@ -49,7 +49,7 @@ export default function PendingPropertyModal({ propertyId, onClose, onApproved }
       await adminService.updatePropertyStatus(propertyId, { isActive: false });
       onApproved();
       onClose();
-    } catch (err: any) { alert(err.message); }
+    } catch (err) { alert(err instanceof Error ? err.message : String(err)); }
     finally { setActionLoading(false); }
   };
 
@@ -63,7 +63,7 @@ export default function PendingPropertyModal({ propertyId, onClose, onApproved }
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <h2 className="text-lg font-bold text-gray-900">Propriété en attente d'approbation</h2>
+          <h2 className="text-lg font-bold text-gray-900">Propriété en attente d&apos;approbation</h2>
           <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
             <X className="h-5 w-5 text-gray-500" />
           </button>

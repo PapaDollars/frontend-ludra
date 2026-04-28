@@ -1,4 +1,4 @@
-import DashboardLandlordPage from "@/pages/landlord/dashboard/page";
+import DashboardLandlordPage from "@/views/landlord/dashboard/page";
 
 
 export default function DashboardLandlordRoute() {

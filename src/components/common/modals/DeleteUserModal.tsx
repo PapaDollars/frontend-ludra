@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle, Trash2, User } from 'lucide-react';
+import { AlertTriangle, Trash2 } from 'lucide-react';
 import { Button } from '@/components/common/ui/Button';
 
 interface DeleteConfirmationModalProps {

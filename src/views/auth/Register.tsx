@@ -9,7 +9,7 @@ import RegisterForm from '@/components/auth/RegisterForm';
 import URL from '@/utilis/url/url_front';
 
 export default function RegisterPage() {
-  const { data: session, status } = useSafeSession();
+  const { status } = useSafeSession();
   const router = useRouter();
 
   useEffect(() => {

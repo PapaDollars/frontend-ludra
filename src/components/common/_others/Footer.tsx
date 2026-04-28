@@ -41,7 +41,7 @@ const Footer = memo(() => {
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
               Votre plateforme de confiance pour trouver le logement parfait. 
-              Des milliers d'annonces vérifiées vous attendent.
+              Des milliers d&apos;annonces vérifiées vous attendent.
             </p>
             <div className="flex space-x-4">
               {socialLinks.map((social) => {
@@ -124,7 +124,7 @@ const Footer = memo(() => {
               Politique de confidentialité
             </a>
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors duration-300">
-              Conditions d'utilisation
+              Conditions d&apos;utilisation
             </a>
           </div>
         </div>

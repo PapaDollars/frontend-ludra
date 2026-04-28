@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, CheckCircle, Router } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 
 import AddPropertyForm from '@/components/common/form/AddPropertyForm';
 import { Button } from '@/components/common/ui/Button';

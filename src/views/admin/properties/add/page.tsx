@@ -1,22 +1,23 @@
+// app/admin/properties/add/page.tsx
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, CheckCircle, Users } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 
-import AddUserForm from '@/components/common/form/AddUserForm';
+import AddPropertyForm from '@/components/common/form/AddPropertyForm';
 import { Button } from '@/components/common/ui/Button';
 import URL from '@/utilis/url/url_front';
 
-export default function AddUsersPage() {
+export default function AddPropertyAdminPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSuccess = () => {
     setIsSuccess(true);
-    setTimeout(() => router.push(URL.admin.users), 2000);
+    setTimeout(() => router.push(URL.admin.properties), 2000);
   };
 
   const handleCancel = () => {
@@ -30,13 +31,13 @@ export default function AddUsersPage() {
           <div className="bg-white rounded-lg shadow-lg p-8">
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              {t('admin_add_user.success_title')}
+              {t('admin_add_property.success_title')}
             </h1>
             <p className="text-gray-600 mb-8">
-              {t('admin_add_user.success_message')}
+              {t('admin_add_property.success_message')}
             </p>
-            <Button onClick={() => router.push(URL.admin.users)}>
-              {t('admin_add_user.view_users')}
+            <Button onClick={() => router.push(URL.admin.properties)}>
+              {t('admin_add_property.view_properties')}
             </Button>
           </div>
         </div>
@@ -51,16 +52,16 @@ export default function AddUsersPage() {
         <div className="mb-8">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-gray-900">
-              {t('admin_add_user.page_title')}
+              {t('admin_add_property.page_title')}
             </h1>
             <p className="text-gray-600 mt-2">
-              {t('admin_add_user.page_subtitle')}
+              {t('admin_add_property.page_subtitle')}
             </p>
           </div>
         </div>
 
         {/* Formulaire */}
-        <AddUserForm
+        <AddPropertyForm
           onSuccess={handleSuccess}
           onCancel={handleCancel}
         />

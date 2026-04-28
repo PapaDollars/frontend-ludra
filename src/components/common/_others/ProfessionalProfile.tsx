@@ -2,17 +2,16 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { 
-  Mail, Phone, MapPin, Calendar, Edit2, 
+import {
+  Mail, Phone, MapPin, Edit2,
   Shield, CheckCircle, Save, X,
-  Plus, List, Users, Settings 
+  Plus, List, Users, Settings
 } from 'lucide-react';
-import Link from "next/link";
 import { Card } from '@/components/common/ui/Card';
 import { Button } from '@/components/common/ui/Button';
 import { LinkUpdate } from '@/components/common/ui/LinkUpdate';
 import { Badge } from '@/components/common/ui/Badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/common/ui/Avatar';
+import { Avatar, AvatarFallback } from '@/components/common/ui/Avatar';
 import URL from '@/utilis/url/url_front';
 
 interface ProfessionalProfileProps {

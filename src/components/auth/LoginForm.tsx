@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Eye, EyeOff, Mail, Phone, Lock } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { Button } from '@/components/common/ui/Button';
 import { Card } from '@/components/common/ui/Card';
 import URL from '@/utilis/url/url_front';
@@ -30,8 +30,8 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
 
     try {
       await onSuccess(formData);
-    } catch (err: any) {
-      setError(err.message || t('auth.validation.signin_error'));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('auth.validation.signin_error'));
     } finally {
       setIsLoading(false);
     }

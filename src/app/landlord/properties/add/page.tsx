@@ -1,4 +1,4 @@
-import AddPropertiesPage from "@/pages/landlord/properties/add/page";
+import AddPropertiesPage from "@/views/landlord/properties/add/page";
 
 
 export default function AddPropertiesRoute() {

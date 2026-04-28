@@ -4,4 +4,4 @@ export interface LayoutProps {
     children: ReactNode;
 }
 
-export interface I18nProviderProps extends LayoutProps { }
+export type I18nProviderProps = LayoutProps;

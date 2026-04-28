@@ -1,4 +1,4 @@
-import PropertyDetailPage from '@/pages/public/properties/detail/page';
+import PropertyDetailPage from '@/views/public/properties/detail/page';
 
 interface PageProps {
   params: Promise<{ id: string }>;

@@ -1,4 +1,4 @@
-import FavoritesPage from '@/pages/public/favorites/page';
+import FavoritesPage from '@/views/public/favorites/page';
 
 export default function FavoritesRoute() {
   return <FavoritesPage />;

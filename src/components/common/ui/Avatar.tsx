@@ -79,7 +79,7 @@ const AvatarImage = forwardRef<HTMLImageElement, AvatarImageProps>(
 AvatarImage.displayName = 'AvatarImage';
 
 const AvatarFallback = forwardRef<HTMLDivElement, AvatarFallbackProps>(
-  ({ className, children, delayMs, ...props }, ref) => {
+  ({ className, children, delayMs: _delayMs, ...props }, ref) => {
     return (
       <div
         ref={ref}

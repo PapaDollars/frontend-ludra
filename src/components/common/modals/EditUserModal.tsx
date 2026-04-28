@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  X, User, Mail, Phone, MapPin, Calendar, Shield,
+  X, User, Mail, Phone, MapPin, Shield,
   Camera, Edit, CheckCircle
 } from 'lucide-react';
 import { User as UserType } from '@/types/users';
@@ -20,7 +20,7 @@ export default function EditUserModal({ user, isOpen, onClose, onSave }: EditUse
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [avatar, setAvatar] = useState<File | null>(null);
+  const [_avatar, setAvatar] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string>('');
 
   const [formData, setFormData] = useState<Partial<UserType>>({

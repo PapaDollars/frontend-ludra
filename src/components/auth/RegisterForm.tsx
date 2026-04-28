@@ -56,8 +56,8 @@ export default function RegisterForm() {
       }
 
       router.push(URL.public.properties);
-    } catch (err: any) {
-      setError(err.message || 'Une erreur est survenue lors de l\'inscription');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue lors de l\'inscription');
     } finally {
       setIsLoading(false);
     }

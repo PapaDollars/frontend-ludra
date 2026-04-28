@@ -1,4 +1,4 @@
-import ContactPages from "@/pages/public/contact/page";
+import ContactPages from "@/views/public/contact/page";
 
 
 export default function ContactRoute() {
