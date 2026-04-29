@@ -128,7 +128,7 @@ const Navbar = memo(() => {
           <div className="flex justify-between items-center h-16">
             <div className="flex-shrink-0 flex items-center">
               <Link href={URL.public.home} className="text-2xl font-bold text-primary">
-                House<span className="text-secondary">Plateforme</span>
+                Ludra<span className="text-secondary">Plateforme</span>
               </Link>
             </div>
             <div className="text-gray-500">Chargement...</div>
@@ -145,7 +145,7 @@ const Navbar = memo(() => {
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link href={URL.public.home} className="text-2xl font-bold text-primary hover:opacity-80 transition-opacity">
-              House<span className="text-secondary">Plateforme</span>
+              Ludra<span className="text-secondary">House</span>
             </Link>
           </div>
 

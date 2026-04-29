@@ -101,7 +101,7 @@ const NavbarAdmin = memo(() => {
 
             {/* Logo */}
             <Link href={URL.public.home} className="text-2xl font-bold text-white hover:opacity-80 transition-opacity flex-shrink-0">
-              House<span className="text-primary">Plateforme</span>
+              HLudra<span className="text-secondary">House</span>
             </Link>
 
             {/* Navigation Desktop */}
