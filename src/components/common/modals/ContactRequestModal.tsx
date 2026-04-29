@@ -98,7 +98,7 @@ export default function ContactRequestModal({ notification, onClose }: ContactRe
                   </div>
                   <div className="flex items-center gap-1 text-gray-500">
                     <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
-                    <span className="text-xs capitalize">{property.location}</span>
+                    <span className="text-xs capitalize">{property.location.replace('locations.', '')}</span>
                   </div>
                   <div className="flex items-center gap-4 text-xs text-gray-500 pt-1 border-t border-gray-100">
                     <span className="flex items-center gap-1"><House className="h-3.5 w-3.5" />{property.beds} ch.</span>

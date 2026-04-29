@@ -53,9 +53,9 @@
     "luxury_loft": "Loft de Luxe avec Vue"
   },
   "featured_section": {
-    "title": "Propriétés en Vedette",
-    "subtitle": "Découvrez nos meilleures annonces sélectionnées avec soin",
-    "featured_badge": "En Vedette",
+    "title": "Recent Properties",
+    "subtitle": "Discover the latest listings added to the platform",
+    "featured_badge": "New",
     "per_month": "/mois",
     "view_details": "Voir les détails"
   },

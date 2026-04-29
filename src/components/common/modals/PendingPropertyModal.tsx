@@ -109,7 +109,9 @@ export default function PendingPropertyModal({ propertyId, onClose, onApproved }
               {/* Localisation */}
               <div className="flex items-center text-gray-600 gap-1">
                 <MapPin className="h-4 w-4 flex-shrink-0" />
-                <span className="text-sm capitalize">{property.location}</span>
+                <span className="text-sm capitalize">
+                  {property.location.startsWith('locations.') ? property.location.replace('locations.', '') : property.location}
+                </span>
                 {property.address && <span className="text-sm text-gray-400">— {property.address}</span>}
               </div>
 
