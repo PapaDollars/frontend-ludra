@@ -199,7 +199,9 @@ export default function PropertyDetailPage() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center text-gray-600">
                   <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
-                  <span className="text-sm capitalize">{property.location}</span>
+                  <span className="text-sm capitalize">
+                    {t(`locations.${property.location.replace('locations.', '')}`, { defaultValue: property.location.replace('locations.', '') })}
+                  </span>
                 </div>
                 {property.rating > 0 && (
                   <div className="flex items-center bg-primary/10 px-2 py-1 rounded-full">
@@ -275,7 +277,9 @@ export default function PropertyDetailPage() {
             <div className="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
               <div className="text-center text-gray-500">
                 <MapPin className="h-8 w-8 mx-auto mb-2" />
-                <p className="capitalize font-medium">{property.location}</p>
+                <p className="capitalize font-medium">
+                  {t(`locations.${property.location.replace('locations.', '')}`, { defaultValue: property.location.replace('locations.', '') })}
+                </p>
                 {property.latitude && property.longitude && (
                   <p className="text-xs mt-2">{property.latitude}, {property.longitude}</p>
                 )}

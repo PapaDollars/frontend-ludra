@@ -112,7 +112,9 @@ const PropertyCard = memo(({
 
         <div className="flex items-center text-gray-600 mb-2">
           <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
-          <span className="text-sm truncate">{property.location}</span>
+          <span className="text-sm truncate">
+            {t(`locations.${property.location.replace('locations.', '')}`, { defaultValue: property.location.replace('locations.', '') })}
+          </span>
         </div>
 
         <div className="flex justify-between items-center text-sm text-gray-600 border-t pt-4">

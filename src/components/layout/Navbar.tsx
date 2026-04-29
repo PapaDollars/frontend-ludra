@@ -188,6 +188,16 @@ const Navbar = memo(() => {
             ) : (
               <div className="flex items-center space-x-3">
 
+                {/* ── Bouton Devenir propriétaire (user simple uniquement) ── */}
+                {user && !['landlord', 'admin'].includes(user.role ?? '') && (
+                  <Link href={URL.app.becomeLandlord}>
+                    <Button size="sm" className="bg-secondary hover:bg-secondary-600">
+                      <Building2 className="h-4 w-4 mr-2" />
+                      Devenir propriétaire
+                    </Button>
+                  </Link>
+                )}
+
                 {/* ── Cloche notifications (landlord uniquement) ── */}
                 {isLandlord && (
                   <div className="relative" ref={bellRef}>
@@ -300,17 +310,6 @@ const Navbar = memo(() => {
                       {t('navigation.profile')}
                     </Link>
 
-                    {user && !['landlord', 'admin'].includes(user.role ?? '') && (
-                      <Link
-                        href={URL.app.becomeLandlord}
-                        className="flex items-center px-4 py-2 text-sm font-medium text-   hover:bg-secondary/5 transition-colors"
-                        onClick={() => setIsProfileMenuOpen(false)}
-                      >
-                        <Building2 className="h-4 w-4 mr-3" />
-                        Devenir propriétaire
-                      </Link>
-                    )}
-
                     <div className="border-t border-gray-100 mt-1 pt-1">
                       <button
                         onClick={handleLogout}
@@ -417,7 +416,7 @@ const Navbar = memo(() => {
                     {user && !['landlord', 'admin'].includes(user.role ?? '') && (
                       <Link
                         href={URL.app.becomeLandlord}
-                        className="flex items-center text-secondary hover:bg-secondary/5 px-3 py-3 rounded-md text-base font-medium transition-colors"
+                        className="flex items-center justify-center w-full bg-secondary text-white px-3 py-3 rounded-md text-base font-medium transition-colors hover:bg-secondary-600"
                         onClick={closeMenu}
                       >
                         <Building2 className="h-5 w-5 mr-3" />

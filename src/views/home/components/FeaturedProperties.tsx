@@ -16,8 +16,8 @@ const FeaturedProperties = memo(() => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    propertyService.getFeatured()
-      .then((data) => { setProperties(data); setLoading(false); })
+    propertyService.getProperties({ sortBy: 'newest', limit: 3 })
+      .then((res) => { setProperties(res.data || []); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
 
@@ -35,13 +35,13 @@ const FeaturedProperties = memo(() => {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="bg-gray-200 animate-pulse rounded-xl h-72" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {properties.map((property, index) => (
               <PropertyCard key={property.id} property={property} index={index} showFavorite={true} />
             ))}

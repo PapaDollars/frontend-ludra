@@ -20,10 +20,10 @@ export const processSteps: ProcessStep[] = [
 ];
 
 export const statistics: Statistic[] = [
-  { number: '4K+', label: 'hero.stats.listings' },
-  { number: '6+', label: 'hero.stats.cities' },
-  { number: '8.9/10', label: 'hero.stats.satisfaction' },
-  { number: '24/7', label: 'hero.stats.support' }
+  { number: '100', label: 'hero.stats.listings' },
+  { number: '4+', label: 'hero.stats.cities' },
+  { number: '8.6/10', label: 'hero.stats.satisfaction' },
+  { number: '24h/7j', label: 'hero.stats.support' }
 ];
 
 export const heroImages = [

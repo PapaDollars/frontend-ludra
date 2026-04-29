@@ -109,14 +109,15 @@
     "all": "Logements"
   },
   "locations": {
-    "douala": "Douala, Cameroun",
-    "yaounde": "Yaoundé, Cameroun",
-    "bafoussam": "Bafoussam, Cameroun",
-    "garoua": "Garoua, Cameroun",
-    "ngaoundere": "Ngaoundéré, Cameroun",
-    "limbe": "Limbe, Cameroun",
-    "kribi": "Kribi, Cameroun",
-    "bamenda": "Bamenda, Cameroun"
+    "maroua": "Maroua",
+    "garoua": "Garoua",
+    "ngaoundere": "Ngaoundéré",
+    "bertoua": "Bertoua",
+    "yaounde": "Yaoundé",
+    "douala": "Douala",
+    "bafoussam": "Bafoussam",
+    "bamenda": "Bamenda",
+    "buea": "Buéa"
   },
   "property_titles": {
     "modern_apartment": "Appartement de Standing",
@@ -190,9 +191,9 @@
   },
   "featured_section": {
     "title": "Propriétés",
-    "highlighted_title": "en Vedette",
-    "subtitle": "Découvrez nos meilleures annonces sélectionnées avec soin",
-    "featured_badge": "En Vedette",
+    "highlighted_title": "Récentes",
+    "subtitle": "Découvrez les dernières annonces ajoutées sur la plateforme",
+    "featured_badge": "Nouveau",
     "per_month": " /mois",
     "view_details": "Voir les détails",
     "beds": "chambre",
