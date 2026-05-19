@@ -15,6 +15,7 @@ const Navbar = memo(() => {
   const { data: session, status } = useSafeSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [showLandlordModal, setShowLandlordModal] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const profileMenuRef = useRef<HTMLDivElement>(null);
@@ -128,7 +129,7 @@ const Navbar = memo(() => {
           <div className="flex justify-between items-center h-16">
             <div className="flex-shrink-0 flex items-center">
               <Link href={URL.public.home} className="text-2xl font-bold text-primary">
-                Ludra<span className="text-secondary">Plateforme</span>
+                Ludra<span className="text-secondary">-Home</span>
               </Link>
             </div>
             <div className="text-gray-500">Chargement...</div>
@@ -139,13 +140,14 @@ const Navbar = memo(() => {
   }
 
   return (
+    <>
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link href={URL.public.home} className="text-2xl font-bold text-primary hover:opacity-80 transition-opacity">
-              Ludra<span className="text-secondary">House</span>
+              Ludra<span className="text-secondary">-Home</span>
             </Link>
           </div>
 
@@ -172,6 +174,10 @@ const Navbar = memo(() => {
           <div className="hidden md:flex items-center space-x-4">
             {!isAuthenticated ? (
               <>
+                <Button variant="outline" size="sm" className="border-secondary text-secondary hover:bg-secondary hover:text-white" onClick={() => setShowLandlordModal(true)}>
+                  <Building2 className="h-4 w-4 mr-2" />
+                  Devenir propriétaire
+                </Button>
                 <Link href={URL.auth.login}>
                   <Button variant="outline" size="sm" className="border-primary text-primary">
                     <LogIn className="h-4 w-4 mr-2" />
@@ -372,6 +378,14 @@ const Navbar = memo(() => {
                   <div className="grid grid-cols-1 gap-3 px-2">
                     <Button
                       variant="outline"
+                      className="w-full justify-center border-secondary text-secondary py-3 text-base"
+                      onClick={() => { closeMenu(); setShowLandlordModal(true); }}
+                    >
+                      <Building2 className="h-4 w-4 mr-2" />
+                      Devenir propriétaire
+                    </Button>
+                    <Button
+                      variant="outline"
                       className="w-full justify-center border-primary text-primary py-3 text-base"
                       onClick={closeMenu}
                     >
@@ -441,7 +455,62 @@ const Navbar = memo(() => {
           </div>
         )}
       </nav>
+
     </header>
+
+    {/* ── Modal visiteur : Devenir propriétaire (hors header pour le centrage correct) ── */}
+    {showLandlordModal && (
+      <div
+        className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 px-4"
+        onClick={() => setShowLandlordModal(false)}
+      >
+        <div
+          className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 text-center"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={() => setShowLandlordModal(false)}
+            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
+
+          <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-5">
+            <Building2 className="h-8 w-8 text-secondary" />
+          </div>
+
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Devenez propriétaire
+          </h2>
+          <p className="text-gray-500 mb-6 leading-relaxed">
+            Pour publier vos annonces et gérer vos biens sur Ludra-Home,
+            vous devez d&apos;abord créer un compte gratuitement.
+          </p>
+
+          <Link
+            href={`${URL.auth.register}?redirect=${URL.app.becomeLandlord}`}
+            onClick={() => setShowLandlordModal(false)}
+          >
+            <Button className="w-full bg-secondary hover:bg-secondary-600 py-3 text-base font-semibold mb-3">
+              <UserPlus className="h-5 w-5 mr-2" />
+              Créer mon compte gratuitement
+            </Button>
+          </Link>
+
+          <p className="text-sm text-gray-500">
+            Déjà un compte ?{' '}
+            <Link
+              href={URL.auth.login}
+              className="text-primary font-semibold hover:underline"
+              onClick={() => setShowLandlordModal(false)}
+            >
+              Se connecter
+            </Link>
+          </p>
+        </div>
+      </div>
+    )}
+    </>
   );
 });
 

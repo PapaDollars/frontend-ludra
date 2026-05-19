@@ -10,7 +10,7 @@ import AuthProvider from '@/providers/AuthProvider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'HousePlateforme - Trouvez votre logement idéal',
+  title: 'Ludra-Home - Trouvez votre logement idéal',
   description: 'Plateforme de location de chambres, appartements, studios et maisons',
 }
 
