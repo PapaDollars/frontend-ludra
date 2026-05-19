@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react';
 import { Button } from '@/components/common/ui/Button';
 import { Card } from '@/components/common/ui/Card';
 import URL from '@/utilis/url/url_front';
@@ -75,9 +75,10 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
               name="emailOrPhone"
               type="text"
               required
+              disabled={isLoading}
               value={formData.emailOrPhone}
               onChange={handleChange}
-              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
               placeholder={t('auth.placeholder.emailOrPhone')}
             />
           </div>
@@ -96,9 +97,10 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
               name="password"
               type={showPassword ? 'text' : 'password'}
               required
+              disabled={isLoading}
               value={formData.password}
               onChange={handleChange}
-              className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
               placeholder={t('auth.placeholder.password')}
             />
             <button
@@ -122,7 +124,14 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
           className="w-full"
           disabled={isLoading}
         >
-          {isLoading ? t('auth.login.submit') : t('auth.login.submit')}
+          {isLoading ? (
+            <>
+              <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+              Connexion en cours…
+            </>
+          ) : (
+            t('auth.login.submit')
+          )}
         </Button>
 
         {/* Links */}

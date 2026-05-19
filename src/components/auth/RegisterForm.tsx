@@ -16,7 +16,11 @@ import { Button } from '@/components/common/ui/Button';
 import { Card } from '@/components/common/ui/Card';
 import URL from '@/utilis/url/url_front';
 
-export default function RegisterForm() {
+interface RegisterFormProps {
+  redirectTo?: string;
+}
+
+export default function RegisterForm({ redirectTo }: RegisterFormProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -55,7 +59,7 @@ export default function RegisterForm() {
         return;
       }
 
-      router.push(URL.public.properties);
+      router.push(redirectTo || URL.public.properties);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue lors de l\'inscription');
     } finally {

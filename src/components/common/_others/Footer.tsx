@@ -37,7 +37,7 @@ const Footer = memo(() => {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="text-2xl font-bold text-white mb-4">
-              House<span className="text-secondary">Plateforme</span>
+             Ludra<span className="text-secondary">-Home</span>
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
               Votre plateforme de confiance pour trouver le logement parfait. 
@@ -70,7 +70,7 @@ const Footer = memo(() => {
               </div>
               <div className="flex items-center text-gray-400">
                 <Mail className="h-5 w-5 mr-3" />
-                <span>contact@houseplateforme.fr</span>
+                <span>contact@ludra.cm</span>
               </div>
               <div className="flex items-start text-gray-400">
                 <MapPin className="h-5 w-5 mr-3 mt-1 flex-shrink-0" />
@@ -117,7 +117,7 @@ const Footer = memo(() => {
         {/* Bottom */}
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © 2025 HousePlateforme. Tous droits réservés.
+            © 2026 LudraHome. Tous droits réservés.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors duration-300">
@@ -131,7 +131,7 @@ const Footer = memo(() => {
       </div>
     </footer>
     <footer className="text-center py-4 text-foreground/50">
-       Plateforme House Ludra - Trouvez votre logement idéal.
+       Ludra - Trouvez votre logement idéal.
       </footer>
       </div>
   );
