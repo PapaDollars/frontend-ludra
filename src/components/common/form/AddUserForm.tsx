@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   User, Mail, Phone, MapPin, Shield,
-  X, Plus, Camera
+  X, Plus, Camera, Loader2
 } from 'lucide-react';
 import { Button } from '@/components/common/ui/Button';
 import { Card } from '@/components/common/ui/Card';
@@ -306,7 +306,7 @@ const AddUserForm = ({ onSuccess, onCancel }: AddUserFormProps) => {
             >
               {isSubmitting ? (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  <Loader2 className="animate-spin h-4 w-4 mr-2" />
                   {t('common.creating')}
                 </>
               ) : (

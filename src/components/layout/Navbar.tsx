@@ -147,7 +147,7 @@ const Navbar = memo(() => {
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link href={URL.public.home} className="text-2xl font-bold text-primary hover:opacity-80 transition-opacity">
-              Ludra<span className="text-secondary">-Home</span>
+              Ludra<span className="text-secondary">Home</span>
             </Link>
           </div>
 

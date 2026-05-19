@@ -4,8 +4,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
-  X, User, Mail, Phone, MapPin, Calendar, Shield, 
-  Edit, Trash2, CheckCircle, XCircle, Clock
+  X, User, Mail, Phone, MapPin, Calendar, Shield,
+  Edit, Trash2, CheckCircle, XCircle, Clock, Loader2
 } from 'lucide-react';
 import { User as UserType } from '@/types/users';
 import { Button } from '@/components/common/ui/Button';
@@ -131,7 +131,7 @@ export default function UserDetailModal({
               >
                 {isDeleting ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    <Loader2 className="animate-spin h-4 w-4 mr-2" />
                     {t('common.deleting')}
                   </>
                 ) : (

@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   X, Home, DollarSign, Bed, Bath, Square,
-  Star, Upload, Plus, Edit
+  Star, Upload, Plus, Edit, Loader2
 } from 'lucide-react';
 import { Property } from '@/types/property';
 import { Button } from '@/components/common/ui/Button';
@@ -409,7 +409,7 @@ export default function EditPropertyModal({ property, isOpen, onClose, onSave }:
             >
               {isSubmitting ? (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  <Loader2 className="animate-spin h-4 w-4 mr-2" />
                   {t('common.saving')}
                 </>
               ) : (

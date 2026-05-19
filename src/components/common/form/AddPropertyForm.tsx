@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Home, MapPin, DollarSign, Bed, Bath, Square, Star, Upload, X, Plus, Globe, AlertCircle } from 'lucide-react';
+import { Home, MapPin, DollarSign, Bed, Bath, Square, Star, Upload, X, Plus, Globe, AlertCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/common/ui/Button';
 import { Card } from '@/components/common/ui/Card';
 import { propertyService } from '@/services/property.service';
@@ -294,11 +294,9 @@ const AddPropertyForm = ({ onSuccess, onCancel }: AddPropertyFormProps) => {
               {t('common.cancel')}
             </Button>
             <Button type="submit" disabled={isSubmitting} className="bg-secondary text-secondary-foreground hover:bg-secondary-700 min-w-32">
-              {isSubmitting ? (
-                <span className="flex items-center gap-2"><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />{t('common.creating')}</span>
-              ) : (
-                <span className="flex items-center gap-2"><Plus className="h-4 w-4" />{t('add_property.submit_button')}</span>
-              )}
+              <Loader2 className={`h-4 w-4 mr-2 animate-spin ${isSubmitting ? '' : 'hidden'}`} />
+              <Plus className={`h-4 w-4 mr-2 ${isSubmitting ? 'hidden' : ''}`} />
+              <span>{isSubmitting ? t('common.creating') : t('add_property.submit_button')}</span>
             </Button>
           </div>
         </form>

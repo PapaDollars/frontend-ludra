@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Home } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { Plus, Home, CheckCircle, X } from 'lucide-react';
 import { useSafeSession } from '@/hooks/useSafeSession';
 
 import { landlordService } from '@/services/landlord.service';
@@ -21,6 +22,8 @@ import URL from '@/utilis/url/url_front';
 export default function MyPropertiesPage() {
   const { t } = useTranslation();
   const { data: session } = useSafeSession();
+  const searchParams = useSearchParams();
+  const [showBanner, setShowBanner] = useState(searchParams?.get('added') === '1');
 
   const [properties, setProperties] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
@@ -103,6 +106,17 @@ export default function MyPropertiesPage() {
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
       <div className="max-w-7xl mx-auto px-4 py-8">
+
+        {showBanner && (
+          <div className="mb-6 flex items-center gap-3 bg-green-50 border border-green-200 text-green-800 px-5 py-4 rounded-xl">
+            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+            <p className="font-medium flex-1">Propriété ajoutée avec succès ! Elle sera visible après validation par un administrateur.</p>
+            <button onClick={() => setShowBanner(false)} className="p-1 hover:bg-green-100 rounded-full transition-colors flex-shrink-0" aria-label="Fermer">
+              <X className="h-4 w-4 text-green-600" />
+            </button>
+          </div>
+        )}
+
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('my_properties.title')}</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">{t('my_properties.subtitle')}</p>
