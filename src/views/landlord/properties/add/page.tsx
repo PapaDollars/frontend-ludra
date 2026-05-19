@@ -15,8 +15,7 @@ export default function AddPropertyPage() {
   const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSuccess = () => {
-    setIsSuccess(true);
-    setTimeout(() => router.push(URL.landlord.properties), 2000);
+    router.push(URL.landlord.properties + '?added=1');
   };
 
   const handleCancel = () => {

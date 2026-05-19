@@ -99,7 +99,7 @@ const NavbarLandlord = memo(() => {
 
           {/* Logo */}
           <Link href={URL.public.home} className="text-2xl font-bold text-white hover:opacity-80 transition-opacity flex-shrink-0">
-            Ludra<span className="text-secondary">-Home</span>
+            Ludra<span className="text-secondary">Home</span>
           </Link>
 
           {/* Navigation Desktop */}

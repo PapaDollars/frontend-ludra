@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Building2, User, Camera, CheckCircle, ShieldCheck, AlertCircle, ArrowRight } from 'lucide-react';
+import { Building2, User, Camera, CheckCircle, ShieldCheck, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { Card } from '@/components/common/ui/Card';
 import { Button } from '@/components/common/ui/Button';
 import api from '@/lib/api';
@@ -61,7 +61,7 @@ export default function BecomeLandlordPage() {
   if (status === 'loading') {
     return (
       <div className="min-h-screen pt-20 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" />
+        <Loader2 className="animate-spin h-10 w-10 text-primary" />
       </div>
     );
   }
@@ -262,7 +262,7 @@ export default function BecomeLandlordPage() {
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
+                <Loader2 className="animate-spin h-5 w-5 mr-2" />
                 Vérification en cours...
               </span>
             ) : (

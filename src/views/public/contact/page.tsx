@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Send, CheckCircle, Loader2 } from 'lucide-react';
 import { Card } from '@/components/common/ui/Card';
 import { Button } from '@/components/common/ui/Button';
 
@@ -180,7 +180,7 @@ export default function ContactPage() {
                 <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-primary-700">
                   {loading ? (
                     <span className="flex items-center justify-center gap-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                      <Loader2 className="animate-spin h-4 w-4 mr-2" />
                       Envoi en cours...
                     </span>
                   ) : (

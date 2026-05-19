@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle, Trash2 } from 'lucide-react';
+import { AlertTriangle, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/common/ui/Button';
 
 interface DeleteConfirmationModalProps {
@@ -59,7 +59,7 @@ export default function DeleteConfirmationModal({
           >
             {isDeleting ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <Loader2 className="animate-spin h-4 w-4 mr-2" />
                 {t('admin_users.deleting')}
               </>
             ) : (
