@@ -103,6 +103,15 @@ async function request<T = any>(
     headers,
   });
 
+  if (response.status === 403) {
+    const errorData = await response.json();
+    if (errorData.code === 'ACCOUNT_DISABLED') {
+      forceSignOut();
+      throw new Error(errorData.message || 'Votre compte a été restreint. Déconnexion en cours…');
+    }
+    throw new Error(errorData.message || 'Accès refusé.');
+  }
+
   if (response.status === 401 && retry && auth) {
     const existingToken = getToken();
 

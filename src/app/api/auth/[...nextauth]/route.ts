@@ -27,6 +27,10 @@ const authOptions = {
 
           const data = await res.json();
 
+          if (res.status === 403 && data?.code === 'ACCOUNT_DISABLED') {
+            throw new Error('ACCOUNT_DISABLED:' + (data.message || 'Votre compte a été restreint.'));
+          }
+
           if (!res.ok || !data.success) {
             console.error('[NextAuth] Login échoué:', res.status, data?.message);
             return null;

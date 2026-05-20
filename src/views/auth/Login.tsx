@@ -35,6 +35,9 @@ export default function LoginPage() {
     });
 
     if (result?.error) {
+      if (result.error.startsWith('ACCOUNT_DISABLED:')) {
+        throw new Error(result.error.replace('ACCOUNT_DISABLED:', ''));
+      }
       throw new Error('Email/téléphone ou mot de passe incorrect');
     }
 
