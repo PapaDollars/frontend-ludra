@@ -1,7 +1,8 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+// Priorité : variable serveur privée → variable publique → fallback local
+const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 const authOptions = {
   providers: [
@@ -26,7 +27,10 @@ const authOptions = {
 
           const data = await res.json();
 
-          if (!res.ok || !data.success) return null;
+          if (!res.ok || !data.success) {
+            console.error('[NextAuth] Login échoué:', res.status, data?.message);
+            return null;
+          }
 
           // Retourner l'utilisateur enrichi avec les tokens
           return {
@@ -42,7 +46,8 @@ const authOptions = {
             accessToken: data.data.accessToken,
             refreshToken: data.data.refreshToken,
           };
-        } catch {
+        } catch (err) {
+          console.error('[NextAuth] Erreur réseau vers le backend:', err);
           return null;
         }
       },
