@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { User as UserType } from '@/types/users';
 import { Button } from '@/components/common/ui/Button';
+import { adminService } from '@/services/admin.service';
 
 interface EditUserModalProps {
   user: UserType | null;
@@ -20,6 +21,7 @@ export default function EditUserModal({ user, isOpen, onClose, onSave }: EditUse
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
   const [_avatar, setAvatar] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string>('');
 
@@ -29,11 +31,26 @@ export default function EditUserModal({ user, isOpen, onClose, onSave }: EditUse
     phone: '',
     role: 'user',
     city: '',
-    // dateOfBirth: '',
     emailVerified: false,
     phoneVerified: false,
     isActive: true,
+    adminPermissions: [],
   });
+
+  const ADMIN_PERMISSIONS = [
+    { value: 'manage_users',      label: 'Gestion des utilisateurs (voir, modifier, désactiver)' },
+    { value: 'manage_properties', label: 'Gestion des propriétés (approuver, supprimer)' },
+    { value: 'add_property',      label: 'Ajouter une propriété pour un propriétaire' },
+  ];
+
+  const togglePermission = (perm: string) => {
+    setFormData(prev => ({
+      ...prev,
+      adminPermissions: (prev.adminPermissions || []).includes(perm)
+        ? (prev.adminPermissions || []).filter(p => p !== perm)
+        : [...(prev.adminPermissions || []), perm],
+    }));
+  };
 
   const roles = [
     { value: 'user', label: 'admin_users.roles.user' },
@@ -49,10 +66,10 @@ export default function EditUserModal({ user, isOpen, onClose, onSave }: EditUse
         phone: user.phone,
         role: user.role,
         city: user.city || '',
-        // dateOfBirth: user.dateOfBirth || '',
         emailVerified: user.emailVerified ?? false,
         phoneVerified: user.phoneVerified ?? false,
         isActive: user.isActive ?? true,
+        adminPermissions: user.adminPermissions || [],
       });
 
       // Réinitialiser l'avatar
@@ -96,8 +113,19 @@ export default function EditUserModal({ user, isOpen, onClose, onSave }: EditUse
     if (!user) return;
 
     setIsSubmitting(true);
+    setFormError('');
 
     try {
+      await adminService.updateUser(user.id, {
+        name: formData.name,
+        phone: formData.phone,
+        city: formData.city,
+        role: formData.role,
+        emailVerified: formData.emailVerified,
+        phoneVerified: formData.phoneVerified,
+        ...(formData.role === 'admin' && { adminPermissions: formData.adminPermissions }),
+      });
+
       const updatedUser: UserType = {
         ...user,
         ...formData,
@@ -105,14 +133,9 @@ export default function EditUserModal({ user, isOpen, onClose, onSave }: EditUse
         updatedAt: new Date().toISOString(),
       };
 
-      console.log('Utilisateur mis à jour:', updatedUser);
-
-      // Simulation d'appel API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
       onSave(updatedUser);
-    } catch (error) {
-      console.error('Erreur lors de la modification:', error);
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : 'Une erreur est survenue. Veuillez réessayer.');
     } finally {
       setIsSubmitting(false);
     }
@@ -266,6 +289,35 @@ export default function EditUserModal({ user, isOpen, onClose, onSave }: EditUse
               </select>
             </div>
 
+            {/* Permissions admin */}
+            {formData.role === 'admin' && (
+              <div className="md:col-span-2">
+                <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                  <p className="text-sm font-semibold text-orange-800 mb-3">
+                    🔐 Permissions de cet administrateur :
+                  </p>
+                  <div className="space-y-2">
+                    {ADMIN_PERMISSIONS.map(perm => (
+                      <label key={perm.value} className="flex items-center gap-3 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={(formData.adminPermissions || []).includes(perm.value)}
+                          onChange={() => togglePermission(perm.value)}
+                          className="w-4 h-4 rounded border-orange-300 text-orange-600 focus:ring-orange-500 cursor-pointer"
+                        />
+                        <span className="text-sm text-orange-800 group-hover:text-orange-900">
+                          {perm.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                  <p className="text-xs text-orange-600 mt-3 font-medium border-t border-orange-200 pt-2">
+                    ⚡ Seul le compte propriétaire peut supprimer un administrateur.
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Date de naissance */}
             {/* <div>
               <label className="block text-sm font-medium text-primary mb-2">
@@ -372,6 +424,12 @@ export default function EditUserModal({ user, isOpen, onClose, onSave }: EditUse
               )}
             </Button>
           </div>
+          {formError && (
+            <p className="mt-3 text-sm text-red-600 flex items-center gap-1.5">
+              <X className="h-4 w-4 flex-shrink-0" />
+              {formError}
+            </p>
+          )}
         </form>
       </div>
     </div>

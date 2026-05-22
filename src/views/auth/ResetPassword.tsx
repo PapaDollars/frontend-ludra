@@ -95,12 +95,6 @@ export default function ResetPasswordPage() {
                 <p className="text-gray-500">Choisissez un mot de passe sécurisé d&apos;au moins 8 caractères.</p>
               </div>
 
-              {error && (
-                <div className="mb-5 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg text-sm">
-                  {error}
-                </div>
-              )}
-
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Nouveau mot de passe</label>
@@ -154,6 +148,11 @@ export default function ResetPasswordPage() {
                     'Réinitialiser le mot de passe'
                   )}
                 </Button>
+                {error && (
+                  <p className="mt-3 text-sm text-red-600 text-center">
+                    {error}
+                  </p>
+                )}
               </form>
             </>
           )}

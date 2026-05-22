@@ -6,34 +6,17 @@ import { Home, MapPin, DollarSign, Bed, Bath, Square, Star, Upload, X, Plus, Glo
 import { Button } from '@/components/common/ui/Button';
 import { Card } from '@/components/common/ui/Card';
 import { propertyService } from '@/services/property.service';
+import { LOCATIONS, PROPERTY_TYPES, AMENITIES } from '@/utilis/propertyData';
 
 interface AddPropertyFormProps {
   onSuccess?: () => void;
   onCancel?: () => void;
+  landlords?: { id: string; name: string; email: string }[];
 }
 
-const PROPERTY_TYPES = [
-  { value: 'apartment', label: 'property_types.apartment' },
-  { value: 'studio', label: 'property_types.studio' },
-  { value: 'house', label: 'property_types.house' },
-  { value: 'room', label: 'property_types.room' },
-  { value: 'loft', label: 'property_types.loft' },
-];
 
-const LOCATIONS = [
-  { value: 'douala', label: 'locations.douala' },
-  { value: 'yaounde', label: 'locations.yaounde' },
-  { value: 'bafoussam', label: 'locations.bafoussam' },
-  { value: 'garoua', label: 'locations.garoua' },
-  { value: 'ngaoundere', label: 'locations.ngaoundere' },
-  { value: 'limbe', label: 'locations.limbe' },
-  { value: 'kribi', label: 'locations.kribi' },
-  { value: 'bamenda', label: 'locations.bamenda' },
-];
-
-const AMENITIES = ['wifi', 'parking', 'security', 'garden', 'gym', 'pool', 'ac', 'furnished', 'balcony', 'elevator'];
-
-const AddPropertyForm = ({ onSuccess, onCancel }: AddPropertyFormProps) => {
+const AddPropertyForm = ({ onSuccess, onCancel, landlords }: AddPropertyFormProps) => {
+  const [showFeaturedModal, setShowFeaturedModal] = useState(false);
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [images, setImages] = useState<File[]>([]);
@@ -54,6 +37,7 @@ const AddPropertyForm = ({ onSuccess, onCancel }: AddPropertyFormProps) => {
     longitude: '',
     featured: false,
     amenities: [] as string[],
+    selectedLandlordId: '',
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -103,12 +87,13 @@ const AddPropertyForm = ({ onSuccess, onCancel }: AddPropertyFormProps) => {
       fd.append('location', formData.location);
       fd.append('beds', formData.beds);
       fd.append('baths', formData.baths);
-      fd.append('area', formData.area);
+      if (formData.area) fd.append('area', formData.area);
       fd.append('address', formData.address.trim());
       if (formData.description) fd.append('description', formData.description.trim());
       if (formData.latitude) fd.append('latitude', formData.latitude);
       if (formData.longitude) fd.append('longitude', formData.longitude);
       fd.append('featured', String(formData.featured));
+      if (formData.selectedLandlordId) fd.append('landlordId', formData.selectedLandlordId);
       fd.append('amenities', JSON.stringify(formData.amenities));
 
       images.forEach(img => fd.append('images', img));
@@ -129,14 +114,41 @@ const AddPropertyForm = ({ onSuccess, onCancel }: AddPropertyFormProps) => {
           <p className="text-secondary text-lg font-semibold">{t('add_property.subtitle')}</p>
         </div>
 
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg flex items-center gap-2">
-            <AlertCircle className="h-5 w-5 flex-shrink-0" />
-            {error}
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Sélecteur propriétaire (admin uniquement) */}
+          {landlords !== undefined && (
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <label className="block text-sm font-semibold text-blue-800 mb-2">
+                👤 Propriétaire du bien *
+              </label>
+              {landlords.length === 0 ? (
+                <div className="text-sm text-blue-700 bg-blue-100 rounded-lg p-3">
+                  Aucun compte propriétaire disponible.
+                  <a href="/admin/users/add" className="font-semibold underline ml-1">
+                    Créer un compte propriétaire d&apos;abord →
+                  </a>
+                </div>
+              ) : (
+                <>
+                  <select
+                    value={formData.selectedLandlordId}
+                    onChange={(e) => setFormData(prev => ({ ...prev, selectedLandlordId: e.target.value }))}
+                    required
+                    className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white text-primary"
+                  >
+                    <option value="">Sélectionner un propriétaire...</option>
+                    {landlords.map(l => (
+                      <option key={l.id} value={l.id}>{l.name} — {l.email}</option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-blue-600 mt-1">
+                    La propriété sera ajoutée au compte du propriétaire sélectionné.
+                  </p>
+                </>
+              )}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Titre */}
             <div className="md:col-span-2">
@@ -201,9 +213,9 @@ const AddPropertyForm = ({ onSuccess, onCancel }: AddPropertyFormProps) => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-primary mb-2">
-                  <Square className="h-4 w-4 inline mr-2" />{t('add_property.labels.area')} (m²) *
+                  <Square className="h-4 w-4 inline mr-2" />{t('add_property.labels.area')} (m²)
                 </label>
-                <input type="number" name="area" value={formData.area} onChange={handleInputChange} required min="1"
+                <input type="number" name="area" value={formData.area} onChange={handleInputChange} min="1"
                   className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-tertiary text-primary" placeholder="120" />
               </div>
             </div>
@@ -241,12 +253,12 @@ const AddPropertyForm = ({ onSuccess, onCancel }: AddPropertyFormProps) => {
 
           {/* Équipements */}
           <div>
-            <label className="block text-sm font-medium text-primary mb-3">Équipements</label>
+            <label className="block text-sm font-medium text-primary mb-3">{t('add_property.labels.amenities')}</label>
             <div className="flex flex-wrap gap-2">
               {AMENITIES.map(a => (
-                <button key={a} type="button" onClick={() => handleAmenityChange(a)}
-                  className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${formData.amenities.includes(a) ? 'bg-primary text-white border-primary' : 'border-gray-300 text-gray-600 hover:border-primary'}`}>
-                  {a}
+                <button key={a.value} type="button" onClick={() => handleAmenityChange(a.value)}
+                  className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${formData.amenities.includes(a.value) ? 'bg-primary text-white border-primary' : 'border-gray-300 text-gray-600 hover:border-primary'}`}>
+                  {t(a.label)}
                 </button>
               ))}
             </div>
@@ -281,12 +293,37 @@ const AddPropertyForm = ({ onSuccess, onCancel }: AddPropertyFormProps) => {
 
           {/* Vedette */}
           <div className="flex items-center">
-            <input type="checkbox" name="featured" checked={formData.featured} onChange={handleInputChange}
-              className="rounded border-gray-300 text-primary focus:ring-primary" id="featured-property" />
-            <label htmlFor="featured-property" className="ml-2 flex items-center text-sm text-primary">
-              <Star className="h-4 w-4 text-yellow-400 mr-1" />{t('add_property.labels.featured')}
+            <input
+              type="checkbox"
+              id="featured-property"
+              checked={false}
+              onChange={() => setShowFeaturedModal(true)}
+              className="rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+            />
+            <label htmlFor="featured-property" className="ml-2 flex items-center text-sm text-primary cursor-pointer">
+              <Star className="h-4 w-4 text-yellow-400 mr-1" />
+              {t('add_property.labels.featured')}
             </label>
           </div>
+
+          {/* Modal "fonctionnalité à venir" */}
+          {showFeaturedModal && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 px-4"
+              onClick={() => setShowFeaturedModal(false)}>
+              <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 text-center"
+                onClick={e => e.stopPropagation()}>
+                <div className="text-5xl mb-4">🚧</div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Fonctionnalité à venir</h3>
+                <p className="text-gray-500 mb-6">
+                  La mise en vedette des propriétés sera disponible prochainement.
+                  Restez connecté pour ne pas manquer cette nouveauté !
+                </p>
+                <Button variant="primary" className="w-full" onClick={() => setShowFeaturedModal(false)}>
+                  D&apos;accord, compris
+                </Button>
+              </div>
+            </div>
+          )}
 
           {/* Actions */}
           <div className="flex justify-end space-x-4 pt-6 border-t border-border">
@@ -299,6 +336,12 @@ const AddPropertyForm = ({ onSuccess, onCancel }: AddPropertyFormProps) => {
               <span>{isSubmitting ? t('common.creating') : t('add_property.submit_button')}</span>
             </Button>
           </div>
+          {error && (
+            <p className="mt-3 text-sm text-red-600 flex items-center gap-1.5">
+              <AlertCircle className="h-4 w-4 flex-shrink-0" />
+              {error}
+            </p>
+          )}
         </form>
       </Card>
     </div>

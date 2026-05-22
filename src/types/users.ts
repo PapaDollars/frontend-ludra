@@ -10,6 +10,7 @@ export interface User {
   emailVerified: boolean;
   phoneVerified: boolean;
   isActive: boolean;
+  adminPermissions?: string[];
   createdAt: string;
   updatedAt: string;
 }

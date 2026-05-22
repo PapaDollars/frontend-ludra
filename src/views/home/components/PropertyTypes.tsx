@@ -7,11 +7,11 @@ import URL from '@/utilis/url/url_front';
 
 const types = [
   {
-    icon: Building2,
-    label: 'Appartement',
-    value: 'apartment',
-    desc: 'Logements en immeuble, toutes surfaces',
-    color: 'from-blue-500 to-blue-700',
+    icon: BedDouble,
+    label: 'Chambre',
+    value: 'room',
+    desc: 'Chambre meublée ou non meublée',
+    color: 'from-orange-500 to-orange-700',
   },
   {
     icon: Square,
@@ -21,25 +21,18 @@ const types = [
     color: 'from-purple-500 to-purple-700',
   },
   {
+    icon: Building2,
+    label: 'Appartement',
+    value: 'apartment',
+    desc: 'Logements en immeuble, toutes surfaces',
+    color: 'from-blue-500 to-blue-700',
+  },
+  {
     icon: Home,
     label: 'Maison',
     value: 'house',
     desc: 'Villas et maisons individuelles',
     color: 'from-green-500 to-green-700',
-  },
-  {
-    icon: BedDouble,
-    label: 'Chambre',
-    value: 'room',
-    desc: 'Chambre meublée ou non meublée',
-    color: 'from-orange-500 to-orange-700',
-  },
-  {
-    icon: Layers,
-    label: 'Loft',
-    value: 'loft',
-    desc: 'Espaces ouverts et modernes',
-    color: 'from-rose-500 to-rose-700',
   },
 ];
 

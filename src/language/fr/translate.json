@@ -102,11 +102,22 @@
     }
   },
   "property_types": {
-    "apartment": "Appartement",
-    "studio": "Studio",
-    "house": "Maison",
     "room": "Chambre",
-    "all": "Logements"
+    "studio": "Studio",
+    "apartment": "Appartement",
+    "house": "Maison"
+  },
+  "amenities": {
+    "wifi": "WiFi",
+    "parking": "Parking",
+    "security": "Sécurité",
+    "garden": "Jardin",
+    "gym": "Salle de sport",
+    "pool": "Piscine",
+    "ac": "Climatisation",
+    "furnished": "Meublé",
+    "balcony": "Balcon",
+    "elevator": "Ascenseur"
   },
   "locations": {
     "maroua": "Maroua",
@@ -116,7 +127,7 @@
     "yaounde": "Yaoundé",
     "douala": "Douala",
     "bafoussam": "Bafoussam",
-    "bamenda": "Bamenda",
+    "ebolowa": "Ebolowa",
     "buea": "Buéa"
   },
   "property_titles": {
@@ -269,6 +280,7 @@
     "quick_actions": "Actions rapides",
     "email_verified": "Email vérifié",
     "phone_verified": "Téléphone vérifié",
+    "email_not_editable": "L'email ne peut pas être modifié",
     "email": "Email",
     "phone": "Téléphone",
     "city": "Ville",
@@ -312,6 +324,7 @@
       "amenities": "Équipements",
       "featured": "Mettre en vedette"
     },
+    "featured_coming_soon": "Fonctionnalité à venir",
     "placeholders": {
       "title": "Ex: Bel appartement moderne au cœur de Douala",
       "select_location": "Sélectionnez une ville",

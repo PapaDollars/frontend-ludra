@@ -248,13 +248,6 @@ export default function BecomeLandlordPage() {
             </div>
           </Card>
 
-          {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 flex-shrink-0" />
-              {error}
-            </div>
-          )}
-
           <Button
             type="submit"
             disabled={isLoading}
@@ -272,6 +265,12 @@ export default function BecomeLandlordPage() {
               </span>
             )}
           </Button>
+          {error && (
+            <p className="mt-3 text-sm text-red-600 flex items-center gap-1.5">
+              <AlertCircle className="h-4 w-4 flex-shrink-0" />
+              {error}
+            </p>
+          )}
         </form>
       </div>
     </div>

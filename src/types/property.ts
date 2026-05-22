@@ -4,7 +4,7 @@ export interface Property {
   type: string;
   price: number;
   location: string;
-  status: 'available' | 'occupied' | 'pending'; 
+  status: 'available' | 'occupied' | 'pending';
   rating: number;
   image: string;
   images?: string[];
@@ -18,7 +18,11 @@ export interface Property {
   longitude?: number;
   createdAt?: string;
   updatedAt?: string;
-  landlordId: string; 
+  landlordId: string;
+  landlord?: {
+    name: string;
+    avatar?: string | null;
+  };
 }
 
 export type PropertyStatus = 'available' | 'occupied' | 'pending';

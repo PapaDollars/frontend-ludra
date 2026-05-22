@@ -1,19 +1,25 @@
 // app/admin/properties/add/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { CheckCircle } from 'lucide-react';
 
 import AddPropertyForm from '@/components/common/form/AddPropertyForm';
 import { Button } from '@/components/common/ui/Button';
+import { adminService } from '@/services/admin.service';
 import URL from '@/utilis/url/url_front';
 
 export default function AddPropertyAdminPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const [isSuccess, setIsSuccess] = useState(false);
+  const [landlords, setLandlords] = useState<{ id: string; name: string; email: string }[]>([]);
+
+  useEffect(() => {
+    adminService.getLandlords().then(setLandlords).catch(() => {});
+  }, []);
 
   const handleSuccess = () => {
     setIsSuccess(true);
@@ -64,6 +70,7 @@ export default function AddPropertyAdminPage() {
         <AddPropertyForm
           onSuccess={handleSuccess}
           onCancel={handleCancel}
+          landlords={landlords}
         />
       </div>
     </div>

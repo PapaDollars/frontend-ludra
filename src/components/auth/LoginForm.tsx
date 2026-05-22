@@ -4,10 +4,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import logoImg from '@/assets/img/logo.png';
 import { Button } from '@/components/common/ui/Button';
 import { Card } from '@/components/common/ui/Card';
 import URL from '@/utilis/url/url_front';
-import Link from 'next/link'; 
 
 interface LoginFormProps {
   onSuccess: (credentials: { emailOrPhone: string; password: string }) => void;
@@ -47,6 +49,9 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
   return (
     <Card className="p-8 bg-white/90 backdrop-blur-sm">
       <div className="text-center mb-8">
+        <Link href={URL.public.home} className="inline-block mb-4 hover:opacity-80 transition-opacity">
+          <Image src={logoImg} alt="Ludra-Home" height={56} priority />
+        </Link>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
           {t('auth.login.title')}
         </h1>

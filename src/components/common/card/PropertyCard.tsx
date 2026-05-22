@@ -110,11 +110,30 @@ const PropertyCard = memo(({
           {property.title}
         </h3>
 
-        <div className="flex items-center text-gray-600 mb-2">
-          <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
-          <span className="text-sm truncate">
-            {t(`locations.${property.location.replace('locations.', '')}`, { defaultValue: property.location.replace('locations.', '') })}
-          </span>
+        <div className="flex items-center justify-between mb-2 gap-2">
+          {/* Avatar + nom du propriétaire */}
+          {property.landlord ? (
+            <div className="flex items-center gap-1.5 min-w-0">
+              <div className="h-6 w-6 rounded-full overflow-hidden flex-shrink-0 border border-gray-200">
+                {property.landlord.avatar ? (
+                  <img src={property.landlord.avatar} alt={property.landlord.name} className="h-full w-full object-cover" />
+                ) : (
+                  <div className="h-full w-full bg-primary flex items-center justify-center text-white text-xs font-semibold">
+                    {property.landlord.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
+              <span className="text-xs text-gray-500 truncate">{property.landlord.name}</span>
+            </div>
+          ) : <span />}
+
+          {/* Ville à droite */}
+          <div className="flex items-center text-gray-600 flex-shrink-0">
+            <MapPin className="h-3.5 w-3.5 mr-1 flex-shrink-0" />
+            <span className="text-xs truncate max-w-[100px]">
+              {t(`locations.${property.location.replace('locations.', '')}`, { defaultValue: property.location.replace('locations.', '') })}
+            </span>
+          </div>
         </div>
 
         <div className="flex justify-between items-center text-sm text-gray-600 border-t pt-4">

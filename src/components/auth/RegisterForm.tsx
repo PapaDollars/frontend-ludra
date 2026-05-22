@@ -7,8 +7,10 @@ import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, User, Mail, Phone, Lock } from 'lucide-react';
+import logoImg from '@/assets/img/logo.png';
 
 import { registerSchema, type RegisterForm as RegisterFormType } from '@/utilis/auth_validations';
 import { authService } from '@/services/auth.service';
@@ -77,6 +79,9 @@ export default function RegisterForm({ redirectTo }: RegisterFormProps) {
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
 
           <div className="text-center">
+            <Link href={URL.public.home} className="inline-block mb-3 hover:opacity-80 transition-opacity">
+              <Image src={logoImg} alt="Ludra-Home" height={48} priority />
+            </Link>
             <h2 className="text-2xl font-bold text-primary mb-1">{t('auth.register.title')}</h2>
             <p className="text-gray-500 text-sm">{t('auth.register.subtitle')}</p>
           </div>

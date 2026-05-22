@@ -7,27 +7,9 @@ import { useRouter } from 'next/navigation';
 import { Search, MapPin, Home, ChevronDown } from 'lucide-react';
 
 import { heroImages, statistics } from '@/data/homeData';
+import { LOCATIONS, PROPERTY_TYPES } from '@/utilis/propertyData';
 
-// Options de filtres statiques alignées avec le backend
-const filterOptions = {
-  locations: [
-    { value: 'douala', label: 'locations.douala' },
-    { value: 'yaounde', label: 'locations.yaounde' },
-    { value: 'bafoussam', label: 'locations.bafoussam' },
-    { value: 'garoua', label: 'locations.garoua' },
-    { value: 'ngaoundere', label: 'locations.ngaoundere' },
-    { value: 'limbe', label: 'locations.limbe' },
-    { value: 'kribi', label: 'locations.kribi' },
-    { value: 'bamenda', label: 'locations.bamenda' },
-  ],
-  propertyTypes: [
-    { value: 'apartment', label: 'property_types.apartment' },
-    { value: 'studio', label: 'property_types.studio' },
-    { value: 'house', label: 'property_types.house' },
-    { value: 'room', label: 'property_types.room' },
-    { value: 'loft', label: 'property_types.loft' },
-  ],
-};
+const filterOptions = { locations: LOCATIONS, propertyTypes: PROPERTY_TYPES };
 
 import { Button } from '@/components/common/ui/Button';
 import { Card } from '@/components/common/ui/Card';

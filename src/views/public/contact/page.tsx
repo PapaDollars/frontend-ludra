@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle, Loader2 } from 'lucide-react';
+import api from '@/lib/api';
 import { Card } from '@/components/common/ui/Card';
 import { Button } from '@/components/common/ui/Button';
 
@@ -44,6 +45,7 @@ export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -52,10 +54,15 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // TODO: connecter à l'API backend POST /api/contacts ou service email
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
-    setSent(true);
+    setError('');
+    try {
+      await api.post('/contacts/general', form, { auth: false });
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue. Veuillez réessayer.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -118,6 +125,7 @@ export default function ContactPage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <h2 className="text-xl font-bold text-gray-900 mb-6">Envoyer un message</h2>
+
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
@@ -190,6 +198,11 @@ export default function ContactPage() {
                     </span>
                   )}
                 </Button>
+                {error && (
+                  <p className="mt-3 text-sm text-red-600 text-center">
+                    {error}
+                  </p>
+                )}
               </form>
             )}
           </Card>
