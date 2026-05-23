@@ -89,7 +89,8 @@ export default function AllPropertiesPage() {
     } catch (err: any) { alert(err.message); }
   };
 
-  if (!session || session.user.role !== 'admin') {
+  const role = session?.user?.role;
+  if (!session || (role !== 'admin' && role !== 'proprietaire')) {
     return (
       <div className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
         <Card className="p-8 text-center"><h2 className="text-xl font-semibold mb-4">Accès non autorisé</h2><p>Vous n&apos;avez pas les permissions nécessaires.</p></Card>

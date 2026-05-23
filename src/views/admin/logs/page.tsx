@@ -54,7 +54,8 @@ export default function AdminLogsPage() {
 
   useEffect(() => { if (session) fetchLogs(); }, [session, fetchLogs]);
 
-  if (!session || session.user.role !== 'admin') {
+  const role = session?.user?.role;
+  if (!session || (role !== 'admin' && role !== 'proprietaire')) {
     return (
       <div className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
         <Card className="p-8 text-center"><h2 className="text-xl font-semibold mb-4">Accès non autorisé</h2></Card>

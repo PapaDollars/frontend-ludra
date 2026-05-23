@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Mail, Phone, MapPin, Edit2,
   Shield, CheckCircle, Save, X,
-  Plus, List, Users, Settings, Camera, Loader2
+  Plus, List, Users, Settings, Camera, Loader2, MessageCircle
 } from 'lucide-react';
 import { useRef } from 'react';
 import { Card } from '@/components/common/ui/Card';
@@ -23,7 +23,8 @@ interface ProfessionalProfileProps {
     email: string;
     phone: string;
     city: string;
-    role: 'user' | 'landlord' | 'admin';
+    role: 'user' | 'landlord' | 'admin' | 'proprietaire';
+    whatsapp?: string;
     emailVerified: boolean;
     phoneVerified: boolean;
     createdAt: string;
@@ -64,6 +65,9 @@ export default function ProfessionalProfile({ user, isEditable = false }: Profes
         name: editedUser.name,
         phone: editedUser.phone,
         city: editedUser.city,
+        ...(editedUser.role === 'landlord' || editedUser.role === 'proprietaire'
+          ? { whatsapp: editedUser.whatsapp || '' }
+          : {}),
       });
       setIsEditing(false);
     } catch { /* silencieux */ }
@@ -137,9 +141,9 @@ export default function ProfessionalProfile({ user, isEditable = false }: Profes
                   )}
                   
                   <div className="flex flex-wrap items-center gap-3 mb-3">
-                    <Badge variant={editedUser.role === 'admin' ? 'destructive' : 'secondary'}>
+                    <Badge variant={editedUser.role === 'proprietaire' || editedUser.role === 'admin' ? 'destructive' : 'secondary'}>
                       <Shield className="h-3 w-3 mr-1" />
-                      {t(`${editedUser.role}`)}
+                      {t(`admin_users.roles.${editedUser.role}`, { defaultValue: editedUser.role })}
                     </Badge>
                     
                     {editedUser.emailVerified && (
@@ -237,6 +241,39 @@ export default function ProfessionalProfile({ user, isEditable = false }: Profes
                   )}
                 </div>
               </div>
+
+              {/* WhatsApp — visible uniquement pour les propriétaires */}
+              {(editedUser.role === 'landlord' || editedUser.role === 'proprietaire') && (
+                <div className="flex items-center">
+                  <MessageCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className="font-medium text-gray-900">WhatsApp</div>
+                    {isEditing ? (
+                      <div className="flex items-center border border-gray-300 rounded overflow-hidden focus-within:ring-2 focus-within:ring-primary mt-1">
+                        <span className="px-2 py-2 bg-gray-50 border-r border-gray-300 text-gray-500 text-xs select-none">+237</span>
+                        <input
+                          type="tel"
+                          value={(editedUser.whatsapp || '').replace(/^\+?237/, '')}
+                          onChange={(e) => setEditedUser({ ...editedUser, whatsapp: e.target.value ? `+237${e.target.value.replace(/^\+?237/, '')}` : '' })}
+                          placeholder="6XXXXXXXX"
+                          className="flex-1 p-2 text-sm focus:outline-none"
+                        />
+                      </div>
+                    ) : editedUser.whatsapp ? (
+                      <a
+                        href={`https://wa.me/${editedUser.whatsapp.replace(/\D/g, '').replace(/^(?!237)/, '237')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-green-600 hover:text-green-700 text-sm"
+                      >
+                        {editedUser.whatsapp}
+                      </a>
+                    ) : (
+                      <div className="text-gray-400 text-sm italic">Non renseigné</div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </Card>
 
@@ -263,7 +300,7 @@ export default function ProfessionalProfile({ user, isEditable = false }: Profes
         </div>
 
         {/* Actions rapides pour les propriétaires et admin */}
-        {(editedUser.role === 'landlord' || editedUser.role === 'admin') && (
+        {(editedUser.role === 'landlord' || editedUser.role === 'admin' || editedUser.role === 'proprietaire') && (
           <Card className="p-6 mt-6">
             <h2 className="text-lg font-semibold mb-4">
               {t('profile_user.quick_actions')}

@@ -53,7 +53,7 @@ export const authService = {
     return res.data as { avatar: string };
   },
 
-  async updateProfile(data: { name?: string; phone?: string; city?: string }) {
+  async updateProfile(data: { name?: string; phone?: string; city?: string; whatsapp?: string }) {
     const res = await api.put('/users/profile', data);
     return res.data;
   },
