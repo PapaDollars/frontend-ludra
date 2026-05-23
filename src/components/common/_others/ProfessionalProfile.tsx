@@ -172,10 +172,9 @@ export default function ProfessionalProfile({ user, isEditable = false }: Profes
                           {t('common.cancel')}
                         </Button>
                         <Button onClick={handleSave} size="sm" disabled={isSaving}>
-                          {isSaving
-                            ? <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            : <Save className="h-4 w-4 mr-2" />}
-                          {isSaving ? t('common.saving') : t('common.save')}
+                          <Loader2 className={`h-4 w-4 mr-2 animate-spin ${isSaving ? '' : 'hidden'}`} />
+                          <Save className={`h-4 w-4 mr-2 ${isSaving ? 'hidden' : ''}`} />
+                          <span>{isSaving ? t('common.saving') : t('common.save')}</span>
                         </Button>
                       </div>
                     )}

@@ -139,14 +139,8 @@ export default function ResetPasswordPage() {
                 </div>
 
                 <Button type="submit" variant="primary" size="lg" className="w-full" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                      Mise à jour…
-                    </>
-                  ) : (
-                    'Réinitialiser le mot de passe'
-                  )}
+                  <Loader2 className={`h-5 w-5 mr-2 animate-spin ${isLoading ? '' : 'hidden'}`} />
+                  <span>{isLoading ? 'Mise à jour…' : 'Réinitialiser le mot de passe'}</span>
                 </Button>
                 {error && (
                   <p className="mt-3 text-sm text-red-600 text-center">

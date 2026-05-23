@@ -7,7 +7,7 @@ import { Plus, Home, Building2 } from 'lucide-react';
 
 import { adminService } from '@/services/admin.service';
 import { propertyService } from '@/services/property.service';
-import PropertyUpgradeCard from '@/components/common/card/PropertyUpgradeCard';
+import PropertyCard from '@/components/common/card/PropertyCard';
 import PropertyFilters from '@/components/common/_others/PropertyFilters';
 import EditPropertyModal from '@/components/common/modals/EditPropertyModal';
 import DeletePropertyModal from '@/components/common/modals/DeletePropertyModal';
@@ -127,7 +127,7 @@ export default function AllPropertiesPage() {
           <>
             <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-6'}>
               {properties.map((property, index) => (
-                <PropertyUpgradeCard key={property.id} property={property} index={index} showFavorite={false} showStatus={true} showActions={true} onEdit={(p: any) => { setEditingProperty(p); setIsEditModalOpen(true); }} onDelete={(id: any) => { setDeletingPropertyId(String(id)); setIsDeleteModalOpen(true); }} onApprove={handleApprove} onReject={handleReject} onReactivate={handleReactivate} />
+                <PropertyCard key={property.id} property={property} index={index} showFavorite={false} showStatus={true} showActions={true} onEdit={(p: any) => { setEditingProperty(p); setIsEditModalOpen(true); }} onDelete={(id: any) => { setDeletingPropertyId(String(id)); setIsDeleteModalOpen(true); }} onApprove={handleApprove} onReject={handleReject} onReactivate={handleReactivate} />
               ))}
             </div>
             <Pagination currentPage={currentPage} totalItems={total} itemsPerPage={ITEMS_PER_PAGE} onPageChange={(p) => { setCurrentPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="mt-8" />

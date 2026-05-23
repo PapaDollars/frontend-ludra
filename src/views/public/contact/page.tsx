@@ -186,17 +186,11 @@ export default function ContactPage() {
                 </div>
 
                 <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-primary-700">
-                  {loading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <Loader2 className="animate-spin h-4 w-4 mr-2" />
-                      Envoi en cours...
-                    </span>
-                  ) : (
-                    <span className="flex items-center justify-center gap-2">
-                      <Send className="h-4 w-4" />
-                      Envoyer le message
-                    </span>
-                  )}
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className={`animate-spin h-4 w-4 mr-2 ${loading ? '' : 'hidden'}`} />
+                    <Send className={`h-4 w-4 ${loading ? 'hidden' : ''}`} />
+                    <span>{loading ? 'Envoi en cours...' : 'Envoyer le message'}</span>
+                  </span>
                 </Button>
                 {error && (
                   <p className="mt-3 text-sm text-red-600 text-center">

@@ -411,17 +411,9 @@ export default function EditUserModal({ user, isOpen, onClose, onSave }: EditUse
               disabled={isSubmitting}
               className="bg-secondary text-white hover:bg-secondary-700 min-w-32"
             >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="animate-spin h-4 w-4 mr-2" />
-                  {t('common.saving')}
-                </>
-              ) : (
-                <>
-                  <Edit className="h-4 w-4 mr-2" />
-                  {t('common.save_changes')}
-                </>
-              )}
+              <Loader2 className={`h-4 w-4 mr-2 animate-spin ${isSubmitting ? '' : 'hidden'}`} />
+              <Edit className={`h-4 w-4 mr-2 ${isSubmitting ? 'hidden' : ''}`} />
+              <span>{isSubmitting ? t('common.saving') : t('common.save_changes')}</span>
             </Button>
           </div>
           {formError && (

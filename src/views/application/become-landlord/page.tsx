@@ -253,17 +253,11 @@ export default function BecomeLandlordPage() {
             disabled={isLoading}
             className="w-full py-4 text-base font-semibold bg-secondary hover:bg-secondary-700"
           >
-            {isLoading ? (
-              <span className="flex items-center justify-center gap-2">
-                <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                Vérification en cours...
-              </span>
-            ) : (
-              <span className="flex items-center justify-center gap-2">
-                <Building2 className="h-5 w-5" />
-                Devenir propriétaire
-              </span>
-            )}
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 className={`animate-spin h-5 w-5 mr-2 ${isLoading ? '' : 'hidden'}`} />
+              <Building2 className={`h-5 w-5 ${isLoading ? 'hidden' : ''}`} />
+              <span>{isLoading ? 'Vérification en cours...' : 'Devenir propriétaire'}</span>
+            </span>
           </Button>
           {error && (
             <p className="mt-3 text-sm text-red-600 flex items-center gap-1.5">

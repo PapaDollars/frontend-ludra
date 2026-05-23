@@ -22,7 +22,7 @@ export const adminService = {
   },
 
   async updateUser(id: string, data: { name?: string; phone?: string; city?: string; role?: string; emailVerified?: boolean; phoneVerified?: boolean; adminPermissions?: string[] }) {
-    const res = await api.put(`/${id}/users`, data);
+    const res = await api.put(`/admin/${id}/users`, data);
     return res.data;
   },
 

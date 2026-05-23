@@ -26,7 +26,8 @@ export default function AddPropertyPage() {
   }, [isAdmin]);
 
   const handleSuccess = () => {
-    router.push(URL.landlord.properties + '?added=1');
+    // Admin → liste admin des propriétés ; Propriétaire → sa propre liste
+    router.push(isAdmin ? URL.admin.properties + '?added=1' : URL.landlord.properties + '?added=1');
   };
 
   const handleCancel = () => {
