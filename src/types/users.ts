@@ -5,8 +5,9 @@ export interface User {
   email: string;
   phone: string;
   city: string;
-  role: 'user' | 'landlord' | 'admin';
+  role: 'user' | 'landlord' | 'admin' | 'proprietaire';
   avatar?: string;
+  whatsapp?: string;
   emailVerified: boolean;
   phoneVerified: boolean;
   isActive: boolean;

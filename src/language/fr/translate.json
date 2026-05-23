@@ -464,6 +464,7 @@
       "phone_verified": "Téléphone vérifié"
     },
     "roles": {
+      "proprietaire": "Compte propriétaire",
       "admin": "Administrateur",
       "landlord": "Propriétaire",
       "user": "Utilisateur"

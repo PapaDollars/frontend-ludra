@@ -9,7 +9,8 @@ export function useRole() {
     role: session?.user?.role,
     isAuthenticated: status === 'authenticated',
     isLoading: status === 'loading',
-    isAdmin: session?.user?.role === 'admin',
+    isProprietaire: session?.user?.role === 'proprietaire',
+    isAdmin: session?.user?.role === 'admin' || session?.user?.role === 'proprietaire',
     isLandlord: session?.user?.role === 'landlord',
     isUser: session?.user?.role === 'user',
     hasRole: (roles: string | string[]) => {

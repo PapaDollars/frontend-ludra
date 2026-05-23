@@ -1,4 +1,4 @@
-// data/homeData.ts (simplifié)
+                                                                            // data/homeData.ts (simplifié)
 import { Statistic, ProcessStep } from '@/types/home';
 
 export const processSteps: ProcessStep[] = [
