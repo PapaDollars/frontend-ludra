@@ -96,7 +96,10 @@ export default function BecomeLandlordPage() {
     try {
       const formData = new FormData();
       formData.append('fullName', data.fullName.trim());
-      if (data.whatsapp) formData.append('whatsapp', data.whatsapp.trim());
+      if (data.whatsapp) {
+        const digits = data.whatsapp.trim().replace(/^\+?237/, '');
+        formData.append('whatsapp', `+237${digits}`);
+      }
       if (avatar) {
         formData.append('avatar', avatar);
       }

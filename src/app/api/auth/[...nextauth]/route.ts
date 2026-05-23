@@ -48,6 +48,7 @@ const authOptions = {
             emailVerified: data.data.user.emailVerified,
             phoneVerified: data.data.user.phoneVerified,
             city: data.data.user.city,
+            whatsapp: data.data.user.whatsapp || null,
             adminPermissions: data.data.user.adminPermissions || [],
             accessToken: data.data.accessToken,
             refreshToken: data.data.refreshToken,
@@ -71,6 +72,7 @@ const authOptions = {
         token.emailVerified = user.emailVerified;
         token.phoneVerified = user.phoneVerified;
         token.city = user.city;
+        token.whatsapp = user.whatsapp || null;
         token.adminPermissions = user.adminPermissions || [];
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
@@ -94,6 +96,7 @@ const authOptions = {
               token.phone             = fresh.phone             ?? token.phone;
               token.avatar            = fresh.avatar            ?? token.avatar;
               token.city              = fresh.city              ?? token.city;
+              token.whatsapp          = fresh.whatsapp          ?? token.whatsapp;
               token.emailVerified     = fresh.emailVerified     ?? token.emailVerified;
               token.phoneVerified     = fresh.phoneVerified     ?? token.phoneVerified;
             }
@@ -115,6 +118,7 @@ const authOptions = {
       session.user.emailVerified    = token.emailVerified;
       session.user.phoneVerified    = token.phoneVerified;
       session.user.city             = token.city;
+      session.user.whatsapp         = token.whatsapp || null;
       session.user.adminPermissions = token.adminPermissions || [];
       session.accessToken           = token.accessToken;
       session.refreshToken          = token.refreshToken;

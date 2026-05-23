@@ -260,14 +260,7 @@ export default function ProfessionalProfile({ user, isEditable = false }: Profes
                         />
                       </div>
                     ) : editedUser.whatsapp ? (
-                      <a
-                        href={`https://wa.me/${editedUser.whatsapp.replace(/\D/g, '').replace(/^(?!237)/, '237')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-green-600 hover:text-green-700 text-sm"
-                      >
-                        {editedUser.whatsapp}
-                      </a>
+                      <div className="text-gray-700 text-sm">{editedUser.whatsapp}</div>
                     ) : (
                       <div className="text-gray-400 text-sm italic">Non renseigné</div>
                     )}

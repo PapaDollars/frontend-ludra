@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import {
   MapPin, Star, House, Bath, Square, Wifi, Car,
   Shield, Trees, Dumbbell, Heart, Share2, Phone,
-  Calendar, ChevronLeft, ChevronRight, MessageCircle
+  Calendar, ChevronLeft, ChevronRight
 } from 'lucide-react';
 
 import { propertyService } from '@/services/property.service';
@@ -32,8 +32,8 @@ export default function PropertyDetailPage() {
   const [loading, setLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showContactConfirm, setShowContactConfirm] = useState(false);
   const [modalActionType, setModalActionType] = useState<'contact' | 'favorite' | 'schedule' | 'general'>('general');
+  const [showContactConfirm, setShowContactConfirm] = useState(false);
   const [contactSent, setContactSent] = useState(false);
   const [visitSent, setVisitSent] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
@@ -61,11 +61,7 @@ export default function PropertyDetailPage() {
       return;
     }
 
-    if (actionType === 'contact') {
-      // Afficher le modal de confirmation avant d'envoyer
-      setShowContactConfirm(true);
-      return;
-    }
+    if (actionType === 'contact') { setShowContactConfirm(true); return; }
 
     setActionLoading(true);
     try {
@@ -85,19 +81,22 @@ export default function PropertyDetailPage() {
     }
   };
 
-  const handleConfirmContact = async () => {
-    setActionLoading(true);
-    try {
-      await contactService.send(
-        propertyId,
-        `Bonjour, je suis intéressé(e) par votre bien "${property?.title}". Merci de me contacter.`
-      );
-      setContactSent(true);
-      setShowContactConfirm(false);
-    } catch (err: any) {
-      alert(err.message || 'Une erreur est survenue');
-    } finally {
-      setActionLoading(false);
+  const silentNotify = () => {
+    if (contactSent) return;
+    setContactSent(true);
+    contactService.send(
+      propertyId,
+      `Bonjour, je suis intéressé(e) par votre bien "${property?.title}". Merci de me contacter.`
+    ).catch(() => {});
+  };
+
+  const handleContact = (type: 'phone' | 'whatsapp') => {
+    setShowContactConfirm(false);
+    silentNotify();
+    if (type === 'whatsapp') {
+      window.open(buildWhatsAppUrl(property.landlord.whatsapp), '_blank');
+    } else {
+      window.open(`tel:${property.landlord.phone}`);
     }
   };
 
@@ -262,24 +261,13 @@ export default function PropertyDetailPage() {
                       <Phone className="h-4 w-4" />{property.landlord.phone}
                     </p>
                   )}
-                  {property.landlord.whatsapp && (
-                    <a
-                      href={buildWhatsAppUrl(property.landlord.whatsapp)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-green-600 hover:text-green-700 flex items-center gap-1 font-medium"
-                    >
-                      <MessageCircle className="h-4 w-4" />
-                      Contacter sur WhatsApp
-                    </a>
-                  )}
                 </div>
               )}
 
               <div className="space-y-3 mt-6">
-                <Button className="w-full" size="lg" onClick={() => handleAction('contact')} disabled={actionLoading || contactSent}>
+                <Button className="w-full" size="lg" onClick={() => handleAction('contact')} disabled={contactSent}>
                   <Phone className="h-5 w-5 mr-2" />
-                  {contactSent ? 'Message envoyé ✓' : t('property_details.contact_owner')}
+                  {contactSent ? 'Contacté ✓' : t('property_details.contact_owner')}
                 </Button>
                 <Button variant="outline" className="w-full" size="lg" onClick={() => handleAction('schedule')} disabled={actionLoading || visitSent}>
                   <Calendar className="h-5 w-5 mr-2" />
@@ -339,9 +327,9 @@ export default function PropertyDetailPage() {
 
       <ContactConfirmModal
         isOpen={showContactConfirm}
-        onConfirm={handleConfirmContact}
+        onCall={() => handleContact('phone')}
+        onWhatsApp={property?.landlord?.whatsapp ? () => handleContact('whatsapp') : undefined}
         onCancel={() => setShowContactConfirm(false)}
-        loading={actionLoading}
         userName={(session as any)?.user?.name || ''}
         userPhone={(session as any)?.user?.phone || ''}
         propertyTitle={property?.title || ''}

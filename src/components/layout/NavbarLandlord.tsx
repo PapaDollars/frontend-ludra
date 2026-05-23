@@ -27,6 +27,7 @@ const NavbarLandlord = memo(() => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const bellRef = useRef<HTMLDivElement>(null);
+  const mobileBellRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user && !isLandlord) router.push(URL.public.home);
@@ -68,7 +69,7 @@ const NavbarLandlord = memo(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (isMenuOpen && menuRef.current && !menuRef.current.contains(e.target as Node) && buttonRef.current && !buttonRef.current.contains(e.target as Node)) setIsMenuOpen(false);
       if (isProfileMenuOpen && profileMenuRef.current && !profileMenuRef.current.contains(e.target as Node)) setIsProfileMenuOpen(false);
-      if (isBellOpen && bellRef.current && !bellRef.current.contains(e.target as Node)) setIsBellOpen(false);
+      if (isBellOpen && bellRef.current && !bellRef.current.contains(e.target as Node) && mobileBellRef.current && !mobileBellRef.current.contains(e.target as Node)) setIsBellOpen(false);
     };
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') { setIsMenuOpen(false); setIsProfileMenuOpen(false); setIsBellOpen(false); }
@@ -160,9 +161,6 @@ const NavbarLandlord = memo(() => {
                             <div className="flex-1 min-w-0">
                               <p className={`text-sm font-medium ${!notif.isRead ? 'text-gray-900' : 'text-gray-600'}`}>{notif.title}</p>
                               <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{notif.message}</p>
-                              {notif.type === 'contact_request' && (
-                                <span className="text-xs text-primary font-medium mt-1 inline-block">Voir les coordonnées →</span>
-                              )}
                               <p className="text-xs text-gray-400 mt-1">
                                 {new Date(notif.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                               </p>
@@ -256,7 +254,7 @@ const NavbarLandlord = memo(() => {
 
         {/* Mobile Bell Dropdown */}
         {isBellOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-white shadow-lg z-40 border-t">
+          <div ref={mobileBellRef} className="md:hidden absolute top-16 left-0 right-0 bg-white shadow-lg z-40 border-t">
             <div className="flex items-center justify-between px-4 py-3 border-b bg-gray-50">
               <span className="font-semibold text-gray-900 text-sm">Notifications</span>
               {unreadCount > 0 && (
@@ -279,9 +277,6 @@ const NavbarLandlord = memo(() => {
                       <div>
                         <p className={`text-sm font-medium ${!notif.isRead ? 'text-gray-900' : 'text-gray-600'}`}>{notif.title}</p>
                         <p className="text-xs text-gray-500 mt-0.5">{notif.message}</p>
-                        {notif.type === 'contact_request' && (
-                          <span className="text-xs text-primary font-medium mt-0.5 inline-block">Voir les coordonnées →</span>
-                        )}
                       </div>
                     </div>
                   </button>

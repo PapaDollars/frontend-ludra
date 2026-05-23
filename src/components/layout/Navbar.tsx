@@ -195,7 +195,7 @@ const Navbar = memo(() => {
               <div className="flex items-center space-x-3">
 
                 {/* ── Bouton Devenir propriétaire (user simple uniquement) ── */}
-                {user && !['landlord', 'admin'].includes(user.role ?? '') && (
+                {user && !['landlord', 'admin', 'proprietaire'].includes(user.role ?? '') && (
                   <Link href={URL.app.becomeLandlord}>
                     <Button size="sm" className="bg-secondary hover:bg-secondary-600">
                       <Building2 className="h-4 w-4 mr-2" />
@@ -431,7 +431,7 @@ const Navbar = memo(() => {
                       {t('navigation.profile')}
                     </Link>
 
-                    {user && !['landlord', 'admin'].includes(user.role ?? '') && (
+                    {user && !['landlord', 'admin', 'proprietaire'].includes(user.role ?? '') && (
                       <Link
                         href={URL.app.becomeLandlord}
                         className="flex items-center justify-center w-full bg-secondary text-white px-3 py-3 rounded-md text-base font-medium transition-colors hover:bg-secondary-600"

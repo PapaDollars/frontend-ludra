@@ -33,7 +33,7 @@ export const propertyService = {
   },
 
   async getById(id: string) {
-    const res = await api.get(`/properties/${id}`, { auth: false });
+    const res = await api.get(`/properties/${id}`);
     return res.data;
   },
 
