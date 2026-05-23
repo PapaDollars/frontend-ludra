@@ -82,6 +82,9 @@ export default function UsersPage() {
   };
 
   const role = session?.user?.role;
+  const sessionPerms: string[] = (session?.user as any)?.adminPermissions || [];
+  const canSeeAdmins = role === 'proprietaire' || sessionPerms.includes('add_admin');
+
   if (!session || (role !== 'admin' && role !== 'proprietaire')) {
     return (
       <div className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
@@ -106,8 +109,15 @@ export default function UsersPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-4">
-          {[['blue-500', stats.total, 'admin_users.stats.total'], ['purple-500', stats.admins, 'admin_users.stats.admins'], ['green-500', stats.landlords, 'admin_users.stats.landlords'], ['orange-500', stats.regularUsers, 'admin_users.stats.users'], ['teal-500', stats.emailVerified, 'admin_users.stats.email_verified'], ['indigo-500', stats.phoneVerified, 'admin_users.stats.phone_verified']].map(([color, val, label], i) => (
-            <Card key={i} className={`p-6 text-center bg-white border-l-4 border-l-${color}`}><div className="text-2xl font-bold">{loading ? '…' : val}</div><div className="text-gray-600">{t(label as string)}</div></Card>
+          {([
+            ['blue-500', stats.total, 'admin_users.stats.total'],
+            ...(canSeeAdmins ? [['purple-500', stats.admins, 'admin_users.stats.admins']] : []),
+            ['green-500', stats.landlords, 'admin_users.stats.landlords'],
+            ['orange-500', stats.regularUsers, 'admin_users.stats.users'],
+            ['teal-500', stats.emailVerified, 'admin_users.stats.email_verified'],
+            ['indigo-500', stats.phoneVerified, 'admin_users.stats.phone_verified'],
+          ] as [string, number, string][]).map(([color, val, label], i) => (
+            <Card key={i} className={`p-6 text-center bg-white border-l-4 border-l-${color}`}><div className="text-2xl font-bold">{loading ? '…' : val}</div><div className="text-gray-600">{t(label)}</div></Card>
           ))}
         </div>
 
@@ -124,7 +134,7 @@ export default function UsersPage() {
               <div><label className="block text-sm font-medium text-gray-700 mb-2">{t('admin_users.filters.role')}</label>
                 <select className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" value={filters.role} onChange={(e) => setFilters({ ...filters, role: e.target.value })}>
                   <option value="">{t('admin_users.filters.all_roles')}</option>
-                  <option value="admin">{t('admin_users.roles.admin')}</option>
+                  {canSeeAdmins && <option value="admin">{t('admin_users.roles.admin')}</option>}
                   <option value="landlord">{t('admin_users.roles.landlord')}</option>
                   <option value="user">{t('admin_users.roles.user')}</option>
                 </select>
