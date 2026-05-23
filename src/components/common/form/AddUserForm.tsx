@@ -9,6 +9,7 @@ import {
 import { Button } from '@/components/common/ui/Button';
 import { Card } from '@/components/common/ui/Card';
 import { adminService } from '@/services/admin.service';
+import { useSafeSession } from '@/hooks/useSafeSession';
 
 interface AddUserFormProps {
   onSuccess?: () => void;
@@ -17,6 +18,10 @@ interface AddUserFormProps {
 
 const AddUserForm = ({ onSuccess, onCancel }: AddUserFormProps) => {
   const { t } = useTranslation();
+  const { data: session } = useSafeSession();
+  const currentUserRole = (session?.user as any)?.role;
+  const currentUserPerms: string[] = (session?.user as any)?.adminPermissions || [];
+  const canAddAdmin = currentUserRole === 'proprietaire' || currentUserPerms.includes('add_admin');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [_avatar, setAvatar] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string>('');
@@ -36,9 +41,10 @@ const AddUserForm = ({ onSuccess, onCancel }: AddUserFormProps) => {
   });
 
   const ADMIN_PERMISSIONS = [
-    { value: 'manage_users',       label: 'Gestion des utilisateurs (voir, modifier, désactiver)' },
-    { value: 'manage_properties',  label: 'Gestion des propriétés (approuver, supprimer)' },
-    { value: 'add_property',       label: 'Ajouter une propriété pour un propriétaire' },
+    { value: 'manage_users',      label: 'Gestion des utilisateurs (voir, modifier, désactiver)' },
+    { value: 'manage_properties', label: 'Gestion des propriétés (approuver, modifier, supprimer)' },
+    { value: 'add_property',      label: 'Ajouter une propriété pour un propriétaire' },
+    { value: 'add_admin',         label: 'Ajouter un administrateur' },
   ];
 
   const togglePermission = (perm: string) => {
@@ -53,7 +59,7 @@ const AddUserForm = ({ onSuccess, onCancel }: AddUserFormProps) => {
   const roles = [
     { value: 'user', label: 'admin_users.roles.user' },
     { value: 'landlord', label: 'admin_users.roles.landlord' },
-    { value: 'admin', label: 'admin_users.roles.admin' },
+    ...(canAddAdmin ? [{ value: 'admin', label: 'admin_users.roles.admin' }] : []),
   ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {

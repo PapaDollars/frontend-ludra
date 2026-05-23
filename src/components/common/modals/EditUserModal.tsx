@@ -9,6 +9,7 @@ import {
 import { User as UserType } from '@/types/users';
 import { Button } from '@/components/common/ui/Button';
 import { adminService } from '@/services/admin.service';
+import { useSafeSession } from '@/hooks/useSafeSession';
 
 interface EditUserModalProps {
   user: UserType | null;
@@ -19,6 +20,10 @@ interface EditUserModalProps {
 
 export default function EditUserModal({ user, isOpen, onClose, onSave }: EditUserModalProps) {
   const { t } = useTranslation();
+  const { data: session } = useSafeSession();
+  const currentUserRole = (session?.user as any)?.role;
+  const currentUserPerms: string[] = (session?.user as any)?.adminPermissions || [];
+  const canAddAdmin = currentUserRole === 'proprietaire' || currentUserPerms.includes('add_admin');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
@@ -39,8 +44,9 @@ export default function EditUserModal({ user, isOpen, onClose, onSave }: EditUse
 
   const ADMIN_PERMISSIONS = [
     { value: 'manage_users',      label: 'Gestion des utilisateurs (voir, modifier, désactiver)' },
-    { value: 'manage_properties', label: 'Gestion des propriétés (approuver, supprimer)' },
+    { value: 'manage_properties', label: 'Gestion des propriétés (approuver, modifier, supprimer)' },
     { value: 'add_property',      label: 'Ajouter une propriété pour un propriétaire' },
+    { value: 'add_admin',         label: 'Ajouter un administrateur' },
   ];
 
   const togglePermission = (perm: string) => {
@@ -55,7 +61,7 @@ export default function EditUserModal({ user, isOpen, onClose, onSave }: EditUse
   const roles = [
     { value: 'user', label: 'admin_users.roles.user' },
     { value: 'landlord', label: 'admin_users.roles.landlord' },
-    { value: 'admin', label: 'admin_users.roles.admin' },
+    ...(canAddAdmin ? [{ value: 'admin', label: 'admin_users.roles.admin' }] : []),
   ];
 
   useEffect(() => {

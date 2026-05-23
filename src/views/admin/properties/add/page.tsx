@@ -8,18 +8,25 @@ import { CheckCircle } from 'lucide-react';
 
 import AddPropertyForm from '@/components/common/form/AddPropertyForm';
 import { Button } from '@/components/common/ui/Button';
+import { Card } from '@/components/common/ui/Card';
 import { adminService } from '@/services/admin.service';
+import { useSafeSession } from '@/hooks/useSafeSession';
 import URL from '@/utilis/url/url_front';
 
 export default function AddPropertyAdminPage() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { data: session } = useSafeSession();
   const [isSuccess, setIsSuccess] = useState(false);
   const [landlords, setLandlords] = useState<{ id: string; name: string; email: string }[]>([]);
 
+  const userRole = (session?.user as any)?.role;
+  const adminPermissions: string[] = (session?.user as any)?.adminPermissions || [];
+  const canAddProperty = userRole === 'proprietaire' || adminPermissions.includes('add_property');
+
   useEffect(() => {
-    adminService.getLandlords().then(setLandlords).catch(() => {});
-  }, []);
+    if (canAddProperty) adminService.getLandlords().then(setLandlords).catch(() => {});
+  }, [canAddProperty]);
 
   const handleSuccess = () => {
     setIsSuccess(true);
@@ -29,6 +36,23 @@ export default function AddPropertyAdminPage() {
   const handleCancel = () => {
     router.back();
   };
+
+  if (!canAddProperty) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center px-4">
+        <Card className="p-10 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-5">
+            <CheckCircle className="h-8 w-8 text-red-400" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">Accès non autorisé</h2>
+          <p className="text-gray-500 text-sm">
+            Vous n&apos;avez pas la permission d&apos;ajouter des propriétés.
+            Contactez le compte propriétaire pour obtenir cet accès.
+          </p>
+        </Card>
+      </div>
+    );
+  }
 
   if (isSuccess) {
     return (
