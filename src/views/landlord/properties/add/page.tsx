@@ -1,21 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { CheckCircle } from 'lucide-react';
 
 import AddPropertyForm from '@/components/common/form/AddPropertyForm';
 import { Button } from '@/components/common/ui/Button';
+import { adminService } from '@/services/admin.service';
+import { useRole } from '@/hooks/useRole';
 import URL from '@/utilis/url/url_front';
 
 export default function AddPropertyPage() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { isAdmin } = useRole();
   const [isSuccess, setIsSuccess] = useState(false);
+  const [landlords, setLandlords] = useState<{ id: string; name: string; email: string }[] | undefined>(undefined);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    adminService.getLandlords()
+      .then(setLandlords)
+      .catch(() => setLandlords([]));
+  }, [isAdmin]);
 
   const handleSuccess = () => {
-    router.push(URL.landlord.properties + '?added=1');
+    // Admin → liste admin des propriétés ; Propriétaire → sa propre liste
+    router.push(isAdmin ? URL.admin.properties + '?added=1' : URL.landlord.properties + '?added=1');
   };
 
   const handleCancel = () => {
@@ -62,6 +74,7 @@ export default function AddPropertyPage() {
         <AddPropertyForm
           onSuccess={handleSuccess}
           onCancel={handleCancel}
+          landlords={landlords}
         />
       </div>
     </div>

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Property } from '@/types/property';
 import { Button } from '@/components/common/ui/Button';
+import { propertyService } from '@/services/property.service';
 
 interface EditPropertyModalProps {
   property: Property | null;
@@ -21,6 +22,7 @@ export default function EditPropertyModal({ property, isOpen, onClose, onSave }:
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
   const [_images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
@@ -112,26 +114,29 @@ export default function EditPropertyModal({ property, isOpen, onClose, onSave }:
     if (!property) return;
 
     setIsSubmitting(true);
+    setFormError('');
 
     try {
+      const fd = new FormData();
+      Object.entries(formData).forEach(([k, v]) => {
+        if (v !== undefined && v !== null) fd.append(k, String(v));
+      });
+      fd.set('location', `locations.${formData.location}`);
+
+      await propertyService.update(String(property.id), fd);
+
       const updatedProperty: Property = {
         ...property,
         ...formData,
         location: `locations.${formData.location}`,
-        // Garder l'image originale si aucune nouvelle image n'est uploadée
         image: imagePreviews[0] || property.image,
         images: imagePreviews.length > 0 ? imagePreviews : property.images,
         updatedAt: new Date().toISOString(),
       };
 
-      console.log('Propriété mise à jour:', updatedProperty);
-      
-      // Simulation d'appel API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
       onSave(updatedProperty);
-    } catch (error) {
-      console.error('Erreur lors de la modification:', error);
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : 'Une erreur est survenue. Veuillez réessayer.');
     } finally {
       setIsSubmitting(false);
     }
@@ -420,6 +425,12 @@ export default function EditPropertyModal({ property, isOpen, onClose, onSave }:
               )}
             </Button>
           </div>
+          {formError && (
+            <p className="mt-3 text-sm text-red-600 flex items-center gap-1.5">
+              <X className="h-4 w-4 flex-shrink-0" />
+              {formError}
+            </p>
+          )}
         </form>
       </div>
     </div>

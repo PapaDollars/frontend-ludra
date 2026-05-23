@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Building2, User, Camera, CheckCircle, ShieldCheck, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
+import { Building2, User, Camera, CheckCircle, ShieldCheck, AlertCircle, ArrowRight, Loader2, MessageCircle } from 'lucide-react';
 import { Card } from '@/components/common/ui/Card';
 import { Button } from '@/components/common/ui/Button';
 import api from '@/lib/api';
@@ -17,6 +17,10 @@ const schema = z.object({
   fullName: z.string().min(3, 'Le nom complet est requis (prénom + nom)').refine(
     (v) => v.trim().split(/\s+/).length >= 2,
     'Entrez votre prénom ET votre nom de famille'
+  ),
+  whatsapp: z.string().optional().refine(
+    (v) => !v || /^(\+237|237)?[62369]\d{8}$/.test(v.replace(/\s/g, '')),
+    'Numéro WhatsApp invalide (ex: +237 6XXXXXXXX)'
   ),
   confirmed: z.boolean().refine(
     (value) => value === true,
@@ -92,6 +96,7 @@ export default function BecomeLandlordPage() {
     try {
       const formData = new FormData();
       formData.append('fullName', data.fullName.trim());
+      if (data.whatsapp) formData.append('whatsapp', data.whatsapp.trim());
       if (avatar) {
         formData.append('avatar', avatar);
       }
@@ -219,6 +224,33 @@ export default function BecomeLandlordPage() {
             )}
           </Card>
 
+          {/* WhatsApp */}
+          <Card className="p-6 bg-white border border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900 mb-1 flex items-center gap-2">
+              <MessageCircle className="h-5 w-5 text-green-500" />
+              Numéro WhatsApp <span className="text-sm font-normal text-gray-400">(optionnel)</span>
+            </h2>
+            <p className="text-sm text-gray-500 mb-5">
+              Permet aux locataires de vous contacter directement via WhatsApp depuis vos annonces.
+            </p>
+            <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition-colors">
+              <span className="px-3 py-3 bg-gray-50 border-r border-gray-300 text-gray-500 text-sm select-none">+237</span>
+              <input
+                type="tel"
+                className="flex-1 px-4 py-3 focus:outline-none text-gray-900"
+                placeholder="6XXXXXXXX"
+                {...register('whatsapp')}
+                disabled={isLoading}
+              />
+            </div>
+            {errors.whatsapp && (
+              <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                <AlertCircle className="h-4 w-4" />
+                {errors.whatsapp.message}
+              </p>
+            )}
+          </Card>
+
           {/* Confirmation CNI */}
           <Card className="p-6 bg-amber-50 border border-amber-200">
             <div className="flex items-start gap-4">
@@ -248,30 +280,23 @@ export default function BecomeLandlordPage() {
             </div>
           </Card>
 
-          {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 flex-shrink-0" />
-              {error}
-            </div>
-          )}
-
           <Button
             type="submit"
             disabled={isLoading}
             className="w-full py-4 text-base font-semibold bg-secondary hover:bg-secondary-700"
           >
-            {isLoading ? (
-              <span className="flex items-center justify-center gap-2">
-                <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                Vérification en cours...
-              </span>
-            ) : (
-              <span className="flex items-center justify-center gap-2">
-                <Building2 className="h-5 w-5" />
-                Devenir propriétaire
-              </span>
-            )}
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 className={`animate-spin h-5 w-5 mr-2 ${isLoading ? '' : 'hidden'}`} />
+              <Building2 className={`h-5 w-5 ${isLoading ? 'hidden' : ''}`} />
+              <span>{isLoading ? 'Vérification en cours...' : 'Devenir propriétaire'}</span>
+            </span>
           </Button>
+          {error && (
+            <p className="mt-3 text-sm text-red-600 flex items-center gap-1.5">
+              <AlertCircle className="h-4 w-4 flex-shrink-0" />
+              {error}
+            </p>
+          )}
         </form>
       </div>
     </div>

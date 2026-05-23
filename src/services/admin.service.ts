@@ -6,7 +6,7 @@ export const adminService = {
     return res.data;
   },
 
-  async createUser(data: { name: string; email: string; phone: string; password: string; role: string; city?: string }) {
+  async createUser(data: { name: string; email: string; phone: string; password: string; role: string; city?: string; adminPermissions?: string[] }) {
     const res = await api.post('/admin/users', data);
     return res.data;
   },
@@ -19,6 +19,11 @@ export const adminService = {
       .join('&');
     const res = await api.get(`/admin/users${qs ? `?${qs}` : ''}`);
     return res;
+  },
+
+  async updateUser(id: string, data: { name?: string; phone?: string; city?: string; role?: string; emailVerified?: boolean; phoneVerified?: boolean; adminPermissions?: string[] }) {
+    const res = await api.put(`/admin/${id}/users`, data);
+    return res.data;
   },
 
   async toggleUserStatus(id: string, isActive: boolean, reason?: string) {
@@ -54,6 +59,11 @@ export const adminService = {
   },
 
   // Filters
+  async getLandlords() {
+    const res = await api.get('/admin/users?role=landlord&limit=100');
+    return (res.data || []) as { id: string; name: string; email: string }[];
+  },
+
   async getFilters() {
     const res = await api.get('/admin/filters');
     return res.data;

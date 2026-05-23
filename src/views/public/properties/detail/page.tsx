@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import {
   MapPin, Star, House, Bath, Square, Wifi, Car,
   Shield, Trees, Dumbbell, Heart, Share2, Phone,
-  Calendar, ChevronLeft, ChevronRight
+  Calendar, ChevronLeft, ChevronRight, MessageCircle
 } from 'lucide-react';
 
 import { propertyService } from '@/services/property.service';
@@ -99,6 +99,37 @@ export default function PropertyDetailPage() {
     } finally {
       setActionLoading(false);
     }
+  };
+
+  const buildWhatsAppUrl = (whatsapp: string) => {
+    const typeLabels: Record<string, string> = {
+      apartment: 'Appartement', studio: 'Studio', house: 'Maison', room: 'Chambre',
+    };
+    const loc = property?.location
+      ? property.location.charAt(0).toUpperCase() + property.location.slice(1)
+      : '';
+    const type = typeLabels[property?.type] || property?.type || '';
+    const address = property?.address ? ` — ${property.address}` : '';
+    const price = property?.price?.toLocaleString('fr-FR') ?? '—';
+    const userName = session?.user?.name ? `\n— ${session.user.name}` : '';
+
+    const msg = [
+      'Bonjour ! 👋',
+      '',
+      "Je vous contacte depuis *LudraHome*, l'application immobilière.",
+      '',
+      'Je suis intéressé(e) par votre bien :',
+      `🏠 *${property?.title}*`,
+      `📍 ${loc}${address}`,
+      `🏷️ ${type}`,
+      `💰 ${price} FCFA/mois`,
+      `🛏️ ${property?.beds} ch.  •  🚿 ${property?.baths} SDB  •  📐 ${property?.area} m²`,
+      '',
+      `Pourriez-vous me contacter pour plus d'informations ? Merci !${userName}`,
+    ].join('\n');
+
+    const phone = whatsapp.replace(/\D/g, '').replace(/^(?!237)/, '237');
+    return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
   };
 
   if (loading) {
@@ -224,9 +255,24 @@ export default function PropertyDetailPage() {
 
               {/* Contact propriétaire (visible seulement si connecté) */}
               {session && property.landlord && (
-                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                  <p className="text-sm font-medium text-gray-700 mb-1">Propriétaire : {property.landlord.name}</p>
-                  {property.landlord.phone && <p className="text-sm text-gray-600 flex items-center gap-1"><Phone className="h-4 w-4" />{property.landlord.phone}</p>}
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg space-y-1">
+                  <p className="text-sm font-medium text-gray-700">Propriétaire : {property.landlord.name}</p>
+                  {property.landlord.phone && (
+                    <p className="text-sm text-gray-600 flex items-center gap-1">
+                      <Phone className="h-4 w-4" />{property.landlord.phone}
+                    </p>
+                  )}
+                  {property.landlord.whatsapp && (
+                    <a
+                      href={buildWhatsAppUrl(property.landlord.whatsapp)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-green-600 hover:text-green-700 flex items-center gap-1 font-medium"
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                      Contacter sur WhatsApp
+                    </a>
+                  )}
                 </div>
               )}
 

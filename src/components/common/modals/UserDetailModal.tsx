@@ -129,17 +129,9 @@ export default function UserDetailModal({
                 disabled={isDeleting}
                 className="flex items-center gap-2"
               >
-                {isDeleting ? (
-                  <>
-                    <Loader2 className="animate-spin h-4 w-4 mr-2" />
-                    {t('common.deleting')}
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="h-4 w-4" />
-                    {t('common.delete')}
-                  </>
-                )}
+                  <Loader2 className={`animate-spin h-4 w-4 mr-2 ${isDeleting ? '' : 'hidden'}`} />
+                  <Trash2 className={`h-4 w-4 mr-2 ${isDeleting ? 'hidden' : ''}`} />
+                  <span>{isDeleting ? t('common.deleting') : t('common.delete')}</span>
               </Button>
             )}
             <button 

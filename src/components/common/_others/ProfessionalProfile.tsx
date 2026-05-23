@@ -5,13 +5,15 @@ import { useTranslation } from 'react-i18next';
 import {
   Mail, Phone, MapPin, Edit2,
   Shield, CheckCircle, Save, X,
-  Plus, List, Users, Settings
+  Plus, List, Users, Settings, Camera, Loader2
 } from 'lucide-react';
+import { useRef } from 'react';
 import { Card } from '@/components/common/ui/Card';
 import { Button } from '@/components/common/ui/Button';
 import { LinkUpdate } from '@/components/common/ui/LinkUpdate';
 import { Badge } from '@/components/common/ui/Badge';
 import { Avatar, AvatarFallback } from '@/components/common/ui/Avatar';
+import { authService } from '@/services/auth.service';
 import URL from '@/utilis/url/url_front';
 
 interface ProfessionalProfileProps {
@@ -34,14 +36,44 @@ export default function ProfessionalProfile({ user, isEditable = false }: Profes
   const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState(user);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>((user as any).avatar || null);
+  const [pendingAvatarFile, setPendingAvatarFile] = useState<File | null>(null);
+  const [pendingAvatarPreview, setPendingAvatarPreview] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleSave = () => {
-    // Logique de sauvegarde à implémenter
-    setIsEditing(false);
+  const handleAvatarSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPendingAvatarFile(file);
+    const reader = new FileReader();
+    reader.onload = (ev) => setPendingAvatarPreview(ev.target?.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      if (pendingAvatarFile) {
+        const data = await authService.uploadAvatar(pendingAvatarFile);
+        setAvatarUrl(data.avatar);
+        setPendingAvatarFile(null);
+        setPendingAvatarPreview(null);
+      }
+      await authService.updateProfile({
+        name: editedUser.name,
+        phone: editedUser.phone,
+        city: editedUser.city,
+      });
+      setIsEditing(false);
+    } catch { /* silencieux */ }
+    finally { setIsSaving(false); }
   };
 
   const handleCancel = () => {
     setEditedUser(user);
+    setPendingAvatarFile(null);
+    setPendingAvatarPreview(null);
     setIsEditing(false);
   };
 
@@ -64,20 +96,45 @@ export default function ProfessionalProfile({ user, isEditable = false }: Profes
         {/* En-tête du profil */}
         <Card className="p-6 mb-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
-            {/* Avatar */}
-            <Avatar className="h-20 w-20">
-              <AvatarFallback className="bg-primary text-white text-lg font-semibold">
-                {getInitials(editedUser.name)}
-              </AvatarFallback>
-            </Avatar>
+            {/* Avatar avec upload */}
+            <div className="relative flex-shrink-0">
+              <Avatar className="h-20 w-20">
+                {(pendingAvatarPreview || avatarUrl) ? (
+                  <img src={pendingAvatarPreview || avatarUrl!} alt={editedUser.name} className="h-20 w-20 rounded-full object-cover" />
+                ) : (
+                  <AvatarFallback className="bg-primary text-white text-lg font-semibold">
+                    {getInitials(editedUser.name)}
+                  </AvatarFallback>
+                )}
+              </Avatar>
+              {isEditable && isEditing && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute bottom-0 right-0 bg-secondary text-white rounded-full p-1.5 hover:bg-secondary-600 transition-colors shadow-md"
+                    title="Changer la photo"
+                  >
+                    <Camera className="h-3.5 w-3.5" />
+                  </button>
+                  <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleAvatarSelect} />
+                </>
+              )}
+            </div>
 
             {/* Informations principales */}
             <div className="flex-1">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between">
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                    {editedUser.name}
-                  </h1>
+                  {isEditing ? (
+                    <input
+                      value={editedUser.name}
+                      onChange={(e) => setEditedUser({ ...editedUser, name: e.target.value })}
+                      className="text-2xl font-bold text-gray-900 mb-2 border-b-2 border-primary outline-none bg-transparent w-full"
+                    />
+                  ) : (
+                    <h1 className="text-2xl font-bold text-gray-900 mb-2">{editedUser.name}</h1>
+                  )}
                   
                   <div className="flex flex-wrap items-center gap-3 mb-3">
                     <Badge variant={editedUser.role === 'admin' ? 'destructive' : 'secondary'}>
@@ -114,9 +171,10 @@ export default function ProfessionalProfile({ user, isEditable = false }: Profes
                           <X className="h-4 w-4 mr-2" />
                           {t('common.cancel')}
                         </Button>
-                        <Button onClick={handleSave} size="sm">
-                          <Save className="h-4 w-4 mr-2" />
-                          {t('common.save')}
+                        <Button onClick={handleSave} size="sm" disabled={isSaving}>
+                          <Loader2 className={`h-4 w-4 mr-2 animate-spin ${isSaving ? '' : 'hidden'}`} />
+                          <Save className={`h-4 w-4 mr-2 ${isSaving ? 'hidden' : ''}`} />
+                          <span>{isSaving ? t('common.saving') : t('common.save')}</span>
                         </Button>
                       </div>
                     )}
@@ -140,16 +198,8 @@ export default function ProfessionalProfile({ user, isEditable = false }: Profes
                 <Mail className="h-5 w-5 text-gray-400 mr-3 flex-shrink-0" />
                 <div className="flex-1">
                   <div className="font-medium text-gray-900">Email</div>
-                  {isEditing ? (
-                    <input
-                      type="email"
-                      value={editedUser.email}
-                      onChange={(e) => setEditedUser({ ...editedUser, email: e.target.value })}
-                      className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-primary"
-                    />
-                  ) : (
-                    <div className="text-gray-600 text-sm">{editedUser.email}</div>
-                  )}
+                  <div className="text-gray-600 text-sm">{editedUser.email}</div>
+                  {isEditing && <p className="text-xs text-gray-400 mt-0.5">{t('profile_user.email_not_editable')}</p>}
                 </div>
               </div>
 

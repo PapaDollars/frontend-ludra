@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSafeSession } from '@/hooks/useSafeSession';
-import { Users, UserPlus, Mail, Phone, Calendar, Shield, Edit, Trash2, Search, Filter, MoreVertical } from 'lucide-react';
+import { Users, UserPlus, Mail, Phone, Calendar, Shield, Edit, Trash2, Search, Filter, MoreVertical, ToggleLeft, ToggleRight } from 'lucide-react';
 
 import { adminService } from '@/services/admin.service';
 import { Button } from '@/components/common/ui/Button';
@@ -59,6 +59,16 @@ export default function UsersPage() {
   const handleSaveUser = async (updated: User) => {
     console.log('Save user:', updated);
     setIsEditModalOpen(false); setEditingUser(null); fetchUsers();
+  };
+
+  const MAIN_OWNER_EMAIL = 'ludra.home@gmail.com';
+  const isOwner = session?.user?.email === MAIN_OWNER_EMAIL;
+
+  const handleToggleStatus = async (user: any) => {
+    try {
+      await adminService.toggleUserStatus(user.id, !user.isActive);
+      fetchUsers();
+    } catch (err: any) { alert(err.message); }
   };
 
   const handleConfirmDelete = async () => {
@@ -164,6 +174,16 @@ export default function UsersPage() {
                         {openMenuId === user.id && (
                           <div className="absolute right-0 top-12 bg-white rounded-lg shadow-lg border py-2 z-10 min-w-[160px]">
                             <button onClick={() => { setEditingUser(user); setIsEditModalOpen(true); setOpenMenuId(null); }} className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><Edit className="h-4 w-4" />{t('common.edit')}</button>
+                            {/* Toggle actif/inactif — admin normal : users+landlords seulement ; owner : tous */}
+                            {(isOwner || user.role !== 'admin') && (
+                              <button
+                                onClick={() => { handleToggleStatus(user); setOpenMenuId(null); }}
+                                className={`w-full px-4 py-2 text-left text-sm flex items-center gap-2 ${user.isActive ? 'text-orange-600 hover:bg-orange-50' : 'text-green-600 hover:bg-green-50'}`}
+                              >
+                                {user.isActive ? <ToggleLeft className="h-4 w-4" /> : <ToggleRight className="h-4 w-4" />}
+                                {user.isActive ? 'Désactiver le compte' : 'Activer le compte'}
+                              </button>
+                            )}
                             <button onClick={() => { setDeletingUserId(user.id); setIsDeleteModalOpen(true); setOpenMenuId(null); }} className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"><Trash2 className="h-4 w-4" />{t('common.delete')}</button>
                           </div>
                         )}

@@ -70,12 +70,6 @@ export default function ForgotPasswordPage() {
                 </p>
               </div>
 
-              {error && (
-                <div className="mb-5 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg text-sm">
-                  {error}
-                </div>
-              )}
-
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
@@ -99,15 +93,14 @@ export default function ForgotPasswordPage() {
                 </div>
 
                 <Button type="submit" variant="primary" size="lg" className="w-full" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                      Envoi en cours…
-                    </>
-                  ) : (
-                    'Envoyer le lien'
-                  )}
+                  <Loader2 className={`h-5 w-5 mr-2 animate-spin ${isLoading ? '' : 'hidden'}`} />
+                  <span>{isLoading ? 'Envoi en cours…' : 'Envoyer le lien'}</span>
                 </Button>
+                {error && (
+                  <p className="mt-3 text-sm text-red-600 text-center">
+                    {error}
+                  </p>
+                )}
               </form>
 
               <div className="mt-6 text-center">

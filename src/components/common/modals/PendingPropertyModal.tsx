@@ -182,7 +182,8 @@ export default function PendingPropertyModal({ propertyId, onClose, onApproved }
                   onClick={handleApprove}
                   disabled={actionLoading}
                 >
-                  {actionLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <CheckCircle className="h-4 w-4 mr-2" />}
+                  <Loader2 className={`h-4 w-4 animate-spin mr-2 ${actionLoading ? '' : 'hidden'}`} />
+                  <CheckCircle className={`h-4 w-4 mr-2 ${actionLoading ? 'hidden' : ''}`} />
                   Approuver
                 </Button>
               </div>

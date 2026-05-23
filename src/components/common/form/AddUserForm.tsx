@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   User, Mail, Phone, MapPin, Shield,
-  X, Plus, Camera, Loader2
+  X, Plus, Camera, Loader2, AlertCircle
 } from 'lucide-react';
 import { Button } from '@/components/common/ui/Button';
 import { Card } from '@/components/common/ui/Card';
@@ -32,7 +32,23 @@ const AddUserForm = ({ onSuccess, onCancel }: AddUserFormProps) => {
     emailVerified: false,
     phoneVerified: false,
     isActive: true,
+    adminPermissions: [] as string[],
   });
+
+  const ADMIN_PERMISSIONS = [
+    { value: 'manage_users',       label: 'Gestion des utilisateurs (voir, modifier, désactiver)' },
+    { value: 'manage_properties',  label: 'Gestion des propriétés (approuver, supprimer)' },
+    { value: 'add_property',       label: 'Ajouter une propriété pour un propriétaire' },
+  ];
+
+  const togglePermission = (perm: string) => {
+    setFormData(prev => ({
+      ...prev,
+      adminPermissions: prev.adminPermissions.includes(perm)
+        ? prev.adminPermissions.filter(p => p !== perm)
+        : [...prev.adminPermissions, perm],
+    }));
+  };
 
   const roles = [
     { value: 'user', label: 'admin_users.roles.user' },
@@ -79,6 +95,7 @@ const AddUserForm = ({ onSuccess, onCancel }: AddUserFormProps) => {
         password: formData.password,
         role: formData.role,
         city: formData.city,
+        ...(formData.role === 'admin' && { adminPermissions: formData.adminPermissions }),
       });
       onSuccess?.();
     } catch (err) {
@@ -191,7 +208,7 @@ const AddUserForm = ({ onSuccess, onCancel }: AddUserFormProps) => {
             </div>
 
             {/* Rôle */}
-            <div>
+            <div className="md:col-span-2">
               <label className="block text-sm font-medium text-primary mb-2">
                 <Shield className="h-4 w-4 inline mr-2" />
                 {t('admin_users.labels.role')} *
@@ -209,6 +226,33 @@ const AddUserForm = ({ onSuccess, onCancel }: AddUserFormProps) => {
                   </option>
                 ))}
               </select>
+
+              {/* Panneau info selon le rôle sélectionné */}
+              {formData.role === 'admin' && (
+                <div className="mt-3 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                  <p className="text-sm font-semibold text-orange-800 mb-3">
+                    🔐 Sélectionne les permissions de cet administrateur :
+                  </p>
+                  <div className="space-y-2">
+                    {ADMIN_PERMISSIONS.map(perm => (
+                      <label key={perm.value} className="flex items-center gap-3 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={formData.adminPermissions.includes(perm.value)}
+                          onChange={() => togglePermission(perm.value)}
+                          className="w-4 h-4 rounded border-orange-300 text-orange-600 focus:ring-orange-500 cursor-pointer"
+                        />
+                        <span className="text-sm text-orange-800 group-hover:text-orange-900">
+                          {perm.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                  <p className="text-xs text-orange-600 mt-3 font-medium border-t border-orange-200 pt-2">
+                    ⚡ Seul le compte propriétaire (ludra.home@gmail.com) peut supprimer un administrateur.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Date de naissance */}
@@ -317,6 +361,12 @@ const AddUserForm = ({ onSuccess, onCancel }: AddUserFormProps) => {
               )}
             </Button>
           </div>
+          {error && (
+            <p className="mt-3 text-sm text-red-600 flex items-center gap-1.5">
+              <AlertCircle className="h-4 w-4 flex-shrink-0" />
+              {error}
+            </p>
+          )}
         </form>
       </Card>
     </div>

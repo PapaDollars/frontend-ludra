@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Search, Filter, MapPin, Home, Bath, DollarSign, Grid, List } from 'lucide-react';
 import { Button } from '@/components/common/ui/Button';
 import { Card } from '@/components/common/ui/Card';
+import { LOCATIONS, PROPERTY_TYPES } from '@/utilis/propertyData';
 
 // Définir FilterState avec status optionnel
 interface FilterState {
@@ -52,22 +53,11 @@ export default function PropertyFilters({
     ],
     locations: [
       { value: '', label: 'filters.labels.all_locations' },
-      { value: 'douala', label: 'locations.douala' },
-      { value: 'yaounde', label: 'locations.yaounde' },
-      { value: 'bafoussam', label: 'locations.bafoussam' },
-      { value: 'garoua', label: 'locations.garoua' },
-      { value: 'ngaoundere', label: 'locations.ngaoundere' },
-      { value: 'limbe', label: 'locations.limbe' },
-      { value: 'kribi', label: 'locations.kribi' },
-      { value: 'bamenda', label: 'locations.bamenda' }
+      ...LOCATIONS,
     ],
     propertyTypes: [
       { value: '', label: 'filters.labels.all_types' },
-      { value: 'apartment', label: 'property_types.apartment' },
-      { value: 'studio', label: 'property_types.studio' },
-      { value: 'house', label: 'property_types.house' },
-      { value: 'room', label: 'property_types.room' },
-      { value: 'loft', label: 'property_types.loft' }
+      ...PROPERTY_TYPES,
     ],
     priceRanges: [
       { value: '', label: 'filters.labels.all_prices' },

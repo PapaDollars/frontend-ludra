@@ -45,4 +45,16 @@ export const authService = {
   async resetPassword(token: string, password: string, confirmPassword: string) {
     return api.post('/auth/reset-password', { token, password, confirmPassword }, { auth: false });
   },
+
+  async uploadAvatar(file: File) {
+    const fd = new FormData();
+    fd.append('avatar', file);
+    const res = await api.post('/users/profile/avatar', fd);
+    return res.data as { avatar: string };
+  },
+
+  async updateProfile(data: { name?: string; phone?: string; city?: string }) {
+    const res = await api.put('/users/profile', data);
+    return res.data;
+  },
 };

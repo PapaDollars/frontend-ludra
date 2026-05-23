@@ -57,17 +57,9 @@ export default function DeleteConfirmationModal({
             disabled={isDeleting}
             className="bg-red-600 text-white hover:bg-red-700 min-w-24"
           >
-            {isDeleting ? (
-              <>
-                <Loader2 className="animate-spin h-4 w-4 mr-2" />
-                {t('admin_users.deleting')}
-              </>
-            ) : (
-              <>
-                <Trash2 className="h-4 w-4 mr-2" />
-                {t('common.delete')}
-              </>
-            )}
+              <Loader2 className={`animate-spin h-4 w-4 mr-2 ${isDeleting ? '' : 'hidden'}`} />
+              <Trash2 className={`h-4 w-4 mr-2 ${isDeleting ? 'hidden' : ''}`} />
+              <span>{isDeleting ? t('admin_users.deleting') : t('common.delete')}</span>
           </Button>
         </div>
       </div>
