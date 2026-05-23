@@ -1,8 +1,10 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-// Priorité : variable serveur privée → variable publique → fallback local
 const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+// Rafraîchir les données utilisateur toutes les 5 minutes
+const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
 
 const authOptions = {
   providers: [
@@ -36,7 +38,6 @@ const authOptions = {
             return null;
           }
 
-          // Retourner l'utilisateur enrichi avec les tokens
           return {
             id: data.data.user.id,
             name: data.data.user.name,
@@ -47,6 +48,7 @@ const authOptions = {
             emailVerified: data.data.user.emailVerified,
             phoneVerified: data.data.user.phoneVerified,
             city: data.data.user.city,
+            adminPermissions: data.data.user.adminPermissions || [],
             accessToken: data.data.accessToken,
             refreshToken: data.data.refreshToken,
           };
@@ -60,7 +62,7 @@ const authOptions = {
 
   callbacks: {
     async jwt({ token, user }: any) {
-      // Premier sign-in : stocker tous les champs dans le token JWT
+      // Premier sign-in : initialiser tous les champs
       if (user) {
         token.id = user.id;
         token.role = user.role;
@@ -69,22 +71,53 @@ const authOptions = {
         token.emailVerified = user.emailVerified;
         token.phoneVerified = user.phoneVerified;
         token.city = user.city;
+        token.adminPermissions = user.adminPermissions || [];
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
+        token.lastRefreshed = Date.now();
+        return token;
       }
+
+      // Rafraîchissement périodique depuis le backend (sans déconnexion)
+      const elapsed = Date.now() - (token.lastRefreshed as number || 0);
+      if (elapsed > REFRESH_INTERVAL_MS) {
+        try {
+          const res = await fetch(`${API_URL}/auth/me`, {
+            headers: { Authorization: `Bearer ${token.accessToken}` },
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.data) {
+              const fresh = data.data;
+              token.role              = fresh.role              ?? token.role;
+              token.adminPermissions  = fresh.adminPermissions  ?? token.adminPermissions;
+              token.phone             = fresh.phone             ?? token.phone;
+              token.avatar            = fresh.avatar            ?? token.avatar;
+              token.city              = fresh.city              ?? token.city;
+              token.emailVerified     = fresh.emailVerified     ?? token.emailVerified;
+              token.phoneVerified     = fresh.phoneVerified     ?? token.phoneVerified;
+            }
+          }
+        } catch {
+          // Échec silencieux : on garde les données existantes
+        }
+        token.lastRefreshed = Date.now();
+      }
+
       return token;
     },
 
     async session({ session, token }: any) {
-      session.user.id = token.id;
-      session.user.role = token.role;
-      session.user.phone = token.phone;
-      session.user.avatar = token.avatar;
-      session.user.emailVerified = token.emailVerified;
-      session.user.phoneVerified = token.phoneVerified;
-      session.user.city = token.city;
-      session.accessToken = token.accessToken;
-      session.refreshToken = token.refreshToken;
+      session.user.id               = token.id;
+      session.user.role             = token.role;
+      session.user.phone            = token.phone;
+      session.user.avatar           = token.avatar;
+      session.user.emailVerified    = token.emailVerified;
+      session.user.phoneVerified    = token.phoneVerified;
+      session.user.city             = token.city;
+      session.user.adminPermissions = token.adminPermissions || [];
+      session.accessToken           = token.accessToken;
+      session.refreshToken          = token.refreshToken;
       return session;
     },
   },

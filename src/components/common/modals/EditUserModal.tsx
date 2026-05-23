@@ -22,7 +22,7 @@ export default function EditUserModal({ user, isOpen, onClose, onSave }: EditUse
   const { t } = useTranslation();
   const { data: session } = useSafeSession();
   const currentUserRole = (session?.user as any)?.role;
-  const currentUserPerms: string[] = (session?.user as any)?.adminPermissions || [];
+  const currentUserPerms: string[] = session?.user?.adminPermissions || [];
   const canAddAdmin = currentUserRole === 'proprietaire' || currentUserPerms.includes('add_admin');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -178,9 +178,13 @@ const NavbarAdmin = memo(() => {
               <div className="relative" ref={profileMenuRef}>
                 <button onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                   className="flex items-center space-x-2 px-3 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition-colors">
-                  <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-semibold">
-                    {user.name?.charAt(0).toUpperCase()}
-                  </div>
+                  {user.avatar ? (
+                    <img src={user.avatar} alt={user.name || ''} className="w-8 h-8 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                      {user.name?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
                   <span className="text-sm font-medium text-white">{user.name?.split(' ')[0]}</span>
                 </button>
 

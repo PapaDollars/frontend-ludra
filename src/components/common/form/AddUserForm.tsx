@@ -20,7 +20,7 @@ const AddUserForm = ({ onSuccess, onCancel }: AddUserFormProps) => {
   const { t } = useTranslation();
   const { data: session } = useSafeSession();
   const currentUserRole = (session?.user as any)?.role;
-  const currentUserPerms: string[] = (session?.user as any)?.adminPermissions || [];
+  const currentUserPerms: string[] = session?.user?.adminPermissions || [];
   const canAddAdmin = currentUserRole === 'proprietaire' || currentUserPerms.includes('add_admin');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [_avatar, setAvatar] = useState<File | null>(null);

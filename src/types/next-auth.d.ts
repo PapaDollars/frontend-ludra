@@ -15,6 +15,7 @@ declare module 'next-auth' {
       city?: string;
       emailVerified: boolean;
       phoneVerified: boolean;
+      adminPermissions?: string[];
     };
   }
 
@@ -29,6 +30,7 @@ declare module 'next-auth' {
     city?: string;
     emailVerified: boolean;
     phoneVerified: boolean;
+    adminPermissions?: string[];
     accessToken?: string;
     refreshToken?: string;
   }
@@ -43,7 +45,9 @@ declare module 'next-auth/jwt' {
     city?: string;
     emailVerified: boolean;
     phoneVerified: boolean;
+    adminPermissions?: string[];
     accessToken?: string;
     refreshToken?: string;
+    lastRefreshed?: number;
   }
 }

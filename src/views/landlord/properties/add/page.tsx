@@ -7,23 +7,29 @@ import { CheckCircle } from 'lucide-react';
 
 import AddPropertyForm from '@/components/common/form/AddPropertyForm';
 import { Button } from '@/components/common/ui/Button';
+import { Card } from '@/components/common/ui/Card';
 import { adminService } from '@/services/admin.service';
 import { useRole } from '@/hooks/useRole';
+import { useSafeSession } from '@/hooks/useSafeSession';
 import URL from '@/utilis/url/url_front';
 
 export default function AddPropertyPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { isAdmin } = useRole();
+  const { isAdmin, isProprietaire, isLoading } = useRole();
+  const { data: session } = useSafeSession();
   const [isSuccess, setIsSuccess] = useState(false);
   const [landlords, setLandlords] = useState<{ id: string; name: string; email: string }[] | undefined>(undefined);
 
+  const adminPermissions: string[] = session?.user?.adminPermissions || [];
+  const canAddProperty = !isAdmin || isProprietaire || adminPermissions.includes('add_property');
+
   useEffect(() => {
-    if (!isAdmin) return;
+    if (!isAdmin || !canAddProperty) return;
     adminService.getLandlords()
       .then(setLandlords)
       .catch(() => setLandlords([]));
-  }, [isAdmin]);
+  }, [isAdmin, canAddProperty]);
 
   const handleSuccess = () => {
     // Admin → liste admin des propriétés ; Propriétaire → sa propre liste
@@ -33,6 +39,31 @@ export default function AddPropertyPage() {
   const handleCancel = () => {
     router.back();
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" />
+      </div>
+    );
+  }
+
+  if (isAdmin && !canAddProperty) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center px-4">
+        <Card className="p-10 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-5">
+            <CheckCircle className="h-8 w-8 text-orange-400" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">Accès non autorisé</h2>
+          <p className="text-gray-500 text-sm leading-relaxed">
+            Vous n&apos;avez pas la permission d&apos;ajouter des propriétés pour un propriétaire.
+            Contactez le compte propriétaire pour obtenir cet accès.
+          </p>
+        </Card>
+      </div>
+    );
+  }
 
   if (isSuccess) {
     return (

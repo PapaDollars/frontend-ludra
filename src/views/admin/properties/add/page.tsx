@@ -21,7 +21,7 @@ export default function AddPropertyAdminPage() {
   const [landlords, setLandlords] = useState<{ id: string; name: string; email: string }[]>([]);
 
   const userRole = (session?.user as any)?.role;
-  const adminPermissions: string[] = (session?.user as any)?.adminPermissions || [];
+  const adminPermissions: string[] = session?.user?.adminPermissions || [];
   const canAddProperty = userRole === 'proprietaire' || adminPermissions.includes('add_property');
 
   useEffect(() => {
