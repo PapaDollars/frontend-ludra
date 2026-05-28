@@ -16,6 +16,15 @@ export interface RegisterPayload {
 }
 
 export const authService = {
+  async sendCode(email: string) {
+    return api.post('/auth/send-code', { email }, { auth: false });
+  },
+
+  async verifyEmailCode(email: string, code: string) {
+    const res = await api.post('/auth/register', { verifyOnly: true, email, code }, { auth: false });
+    return res.data;
+  },
+
   async login(payload: LoginPayload) {
     const res = await api.post('/auth/login', payload, { auth: false });
     setTokens(res.data.accessToken, res.data.refreshToken);
