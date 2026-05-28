@@ -37,7 +37,7 @@ const Footer = memo(() => {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="text-2xl font-bold text-white mb-4">
-             Ludra<span className="text-secondary">-Home</span>
+             Ludra<span className="text-secondary">Home</span>
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
               Votre plateforme de confiance pour trouver le logement parfait. 

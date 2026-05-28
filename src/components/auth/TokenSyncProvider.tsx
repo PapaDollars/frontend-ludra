@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { setTokens } from '@/lib/api';
+import { setTokens, api } from '@/lib/api';
 import { useSafeSession } from '@/hooks/useSafeSession';
+
+const POLL_INTERVAL_MS = 1_800_000; // vérifier toutes les 60 secondes
 
 export default function TokenSyncProvider({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSafeSession();
@@ -17,6 +19,22 @@ export default function TokenSyncProvider({ children }: { children: React.ReactN
       setTokens(accessToken, refreshToken || '');
     }
   }, [status, accessToken, refreshToken]);
+
+  // Polling : vérifie que le compte existe toujours côté backend.
+  // Si le compte a été supprimé par un admin, l'API renvoie 401 et
+  // le client api.ts appelle forceSignOut() automatiquement.
+  useEffect(() => {
+    if (status !== 'authenticated') return;
+
+    const check = () => {
+      api.get('/auth/me').catch(() => {
+        // forceSignOut() est déjà appelé dans api.ts sur 401
+      });
+    };
+
+    const interval = setInterval(check, POLL_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [status]);
 
   return <>{children}</>;
 }

@@ -66,4 +66,14 @@ export const authService = {
     const res = await api.put('/users/profile', data);
     return res.data;
   },
+
+  async requestDeletion() {
+    const res = await api.post('/users/request-deletion');
+    return res.data;
+  },
+
+  async cancelDeletion() {
+    const res = await api.post('/users/cancel-deletion');
+    return res.data;
+  },
 };

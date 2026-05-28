@@ -136,6 +136,11 @@ async function request<T = any>(
   const data = await response.json();
 
   if (!response.ok) {
+    // Si le backend renvoie des erreurs de validation détaillées, les inclure
+    if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+      const details = data.errors.map((e: any) => e.msg || e.message || '').filter(Boolean).join(' • ');
+      throw new Error(details || data.message || `Erreur ${response.status}`);
+    }
     throw new Error(data.message || `Erreur ${response.status}`);
   }
 

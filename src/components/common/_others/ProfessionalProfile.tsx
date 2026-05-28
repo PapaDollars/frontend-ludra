@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Mail, Phone, MapPin, Edit2,
   Shield, CheckCircle, Save, X,
-  Plus, List, Users, Settings, Camera, Loader2, MessageCircle
+  Plus, List, Users, Settings, Camera, Loader2, MessageCircle, Trash2, AlertTriangle
 } from 'lucide-react';
 import { useRef } from 'react';
 import { Card } from '@/components/common/ui/Card';
@@ -41,6 +41,9 @@ export default function ProfessionalProfile({ user, isEditable = false }: Profes
   const [pendingAvatarFile, setPendingAvatarFile] = useState<File | null>(null);
   const [pendingAvatarPreview, setPendingAvatarPreview] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [showDeletionModal, setShowDeletionModal] = useState(false);
+  const [isDeletionRequesting, setIsDeletionRequesting] = useState(false);
+  const [deletionRequested, setDeletionRequested] = useState(!!(user as any).deletionRequestedAt);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAvatarSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,6 +82,23 @@ export default function ProfessionalProfile({ user, isEditable = false }: Profes
     setPendingAvatarFile(null);
     setPendingAvatarPreview(null);
     setIsEditing(false);
+  };
+
+  const handleRequestDeletion = async () => {
+    setIsDeletionRequesting(true);
+    try {
+      await authService.requestDeletion();
+      setDeletionRequested(true);
+      setShowDeletionModal(false);
+    } catch { /* silencieux */ }
+    finally { setIsDeletionRequesting(false); }
+  };
+
+  const handleCancelDeletion = async () => {
+    try {
+      await authService.cancelDeletion();
+      setDeletionRequested(false);
+    } catch { /* silencieux */ }
   };
 
   const getInitials = (name: string) => {
@@ -326,6 +346,69 @@ export default function ProfessionalProfile({ user, isEditable = false }: Profes
             </div>
           </Card>
         )}
+      {/* Zone danger — suppression de compte */}
+      {isEditable && (
+        <Card className="p-6 mt-6 border border-red-200 bg-red-50">
+          <h2 className="text-lg font-semibold text-red-700 mb-2 flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5" /> Zone dangereuse
+          </h2>
+          {deletionRequested ? (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <p className="text-sm text-red-600">
+                ⏳ Votre compte sera supprimé définitivement dans <strong>72h</strong>. Reconnectez-vous ou annulez pour garder votre compte.
+              </p>
+              <Button variant="outline" size="sm" onClick={handleCancelDeletion} className="border-red-300 text-red-700 hover:bg-red-100 whitespace-nowrap">
+                Annuler la suppression
+              </Button>
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <p className="text-sm text-gray-600">La suppression de votre compte est définitive et irréversible.</p>
+              <Button variant="outline" size="sm" onClick={() => setShowDeletionModal(true)} className="border-red-300 text-red-700 hover:bg-red-100 whitespace-nowrap">
+                <Trash2 className="h-4 w-4 mr-2" /> Supprimer mon compte
+              </Button>
+            </div>
+          )}
+        </Card>
+      )}
+
+      {/* Modal confirmation suppression */}
+      {showDeletionModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                <Trash2 className="h-6 w-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Supprimer mon compte</h3>
+                <p className="text-sm text-gray-500">Cette action est irréversible</p>
+              </div>
+            </div>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+              <p className="text-sm text-amber-800">
+                ⚠️ Votre compte sera <strong>définitivement supprimé dans 72 heures</strong>. Toutes vos données (profil, favoris, visites) seront effacées.
+              </p>
+              <p className="text-sm text-amber-800 mt-2">
+                Si vous vous <strong>reconnectez avant les 72h</strong>, la suppression sera automatiquement annulée.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <Button variant="outline" className="flex-1" onClick={() => setShowDeletionModal(false)}>
+                Annuler
+              </Button>
+              <Button
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                onClick={handleRequestDeletion}
+                disabled={isDeletionRequesting}
+              >
+                {isDeletionRequesting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Trash2 className="h-4 w-4 mr-2" />}
+                Confirmer la suppression
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
       </div>
     </div>
   );
