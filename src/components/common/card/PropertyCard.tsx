@@ -190,8 +190,12 @@ const PropertyCard = memo(({
           </span>
         </div>
 
-        <h3 className="text-lg font-semibold group-hover:text-primary transition-colors line-clamp-1 mb-2">
-          {property.title}
+        <h3 className="text-lg font-semibold text-primary hover:text-secondary transition-colors line-clamp-1 mb-2">
+          {property.title
+            .replace(/[^\p{L}\p{N}\s.,!?;:'"()\-]/gu, '')
+            .trim()
+            .toLowerCase()
+            .replace(/^\p{L}/u, c => c.toUpperCase())}
         </h3>
 
         {/* Propriétaire + Localisation sur la même ligne */}

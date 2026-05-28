@@ -40,11 +40,17 @@ const AddPropertyForm = ({ onSuccess, onCancel, landlords }: AddPropertyFormProp
     selectedLandlordId: '',
   });
 
+  const sanitizeTitle = (value: string) => {
+    const cleaned = value.replace(/[^\p{L}\p{N}\s.,!?;:'"()\-]/gu, '').trim();
+    return cleaned.toLowerCase().replace(/^\p{L}/u, c => c.toUpperCase());
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
+    const cleaned = name === 'title' ? sanitizeTitle(value) : value;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : cleaned,
     }));
   };
 
@@ -57,16 +63,31 @@ const AddPropertyForm = ({ onSuccess, onCancel, landlords }: AddPropertyFormProp
     }));
   };
 
+  const MAX_IMAGES = 8;
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
 
-    setImages(prev => [...prev, ...files]);
-    files.forEach(file => {
+    const remaining = MAX_IMAGES - images.length;
+    if (remaining <= 0) {
+      setError(`Maximum ${MAX_IMAGES} images autorisées.`);
+      e.target.value = '';
+      return;
+    }
+
+    const toAdd = files.slice(0, remaining);
+    if (files.length > remaining) {
+      setError(`Limite de ${MAX_IMAGES} images atteinte. Seules ${remaining} image(s) ont été ajoutées.`);
+    }
+
+    setImages(prev => [...prev, ...toAdd]);
+    toAdd.forEach(file => {
       const reader = new FileReader();
       reader.onload = (ev) => setImagePreviews(prev => [...prev, ev.target?.result as string]);
       reader.readAsDataURL(file);
     });
+    e.target.value = '';
   };
 
   const removeImage = (index: number) => {
@@ -266,12 +287,19 @@ const AddPropertyForm = ({ onSuccess, onCancel, landlords }: AddPropertyFormProp
 
           {/* Images */}
           <div>
-            <label className="block text-sm font-medium text-primary mb-2">{t('add_property.labels.images')}</label>
-            <div className="border-2 border-dashed border-primary rounded-lg p-6 text-center bg-tertiary">
+            <label className="block text-sm font-medium text-primary mb-2">
+              {t('add_property.labels.images')}
+              <span className={`ml-2 text-xs font-normal ${images.length >= MAX_IMAGES ? 'text-red-500' : 'text-secondary'}`}>
+                ({images.length}/{MAX_IMAGES})
+              </span>
+            </label>
+            <div className={`border-2 border-dashed rounded-lg p-6 text-center bg-tertiary ${images.length >= MAX_IMAGES ? 'border-red-300 opacity-60' : 'border-primary'}`}>
               <Upload className="h-12 w-12 text-primary mx-auto mb-4" />
-              <p className="text-secondary mb-4">{t('add_property.upload_description')}</p>
-              <input type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={handleImageUpload} className="hidden" id="property-images" />
-              <label htmlFor="property-images" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary-700 cursor-pointer">
+              <p className="text-secondary mb-4">
+                {images.length >= MAX_IMAGES ? `Limite de ${MAX_IMAGES} images atteinte.` : t('add_property.upload_description')}
+              </p>
+              <input type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={handleImageUpload} className="hidden" id="property-images" disabled={images.length >= MAX_IMAGES} />
+              <label htmlFor="property-images" className={`inline-flex items-center px-4 py-2 rounded-lg ${images.length >= MAX_IMAGES ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-primary text-primary-foreground hover:bg-primary-700 cursor-pointer'}`}>
                 <Plus className="h-4 w-4 mr-2" />{t('add_property.upload_button')}
               </label>
             </div>

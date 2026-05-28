@@ -14,6 +14,7 @@ import { propertyService } from '@/services/property.service';
 import { favoriteService } from '@/services/favorite.service';
 import { contactService } from '@/services/contact.service';
 import { visitService } from '@/services/visit.service';
+import { AMENITIES } from '@/utilis/propertyData';
 import { Button } from '@/components/common/ui/Button';
 import { Card } from '@/components/common/ui/Card';
 import Link from 'next/link';
@@ -295,9 +296,11 @@ export default function PropertyDetailPage() {
                 <div className="flex flex-wrap gap-2">
                   {property.amenities.map((a: string) => {
                     const Icon = amenityIcons[a];
+                    const label = AMENITIES.find(item => item.value === a)?.label;
                     return (
                       <span key={a} className="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                        {Icon && <Icon className="h-4 w-4" />}{a}
+                        {Icon && <Icon className="h-4 w-4" />}
+                        {label ? t(label) : a}
                       </span>
                     );
                   })}

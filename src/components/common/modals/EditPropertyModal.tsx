@@ -74,30 +74,48 @@ export default function EditPropertyModal({ property, isOpen, onClose, onSave }:
     }
   }, [property]);
 
+  const sanitizeTitle = (value: string) => {
+    const cleaned = value.replace(/[^\p{L}\p{N}\s.,!?;:'"()\-]/gu, '').trim();
+    return cleaned.toLowerCase().replace(/^\p{L}/u, c => c.toUpperCase());
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
+    const cleaned = name === 'title' ? sanitizeTitle(value) : value;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : 
-               type === 'number' ? parseFloat(value) : value
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked :
+               type === 'number' ? parseFloat(cleaned) : cleaned,
     }));
   };
+
+  const MAX_IMAGES = 8;
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
-    const newImages = Array.from(files);
-    setImages(prev => [...prev, ...newImages]);
+    const remaining = MAX_IMAGES - imagePreviews.length;
+    if (remaining <= 0) {
+      setFormError(`Maximum ${MAX_IMAGES} nouvelles images autorisées.`);
+      e.target.value = '';
+      return;
+    }
 
-    // Créer des previews
+    const newImages = Array.from(files).slice(0, remaining);
+    if (Array.from(files).length > remaining) {
+      setFormError(`Limite de ${MAX_IMAGES} images atteinte. Seules ${remaining} image(s) ont été ajoutées.`);
+    }
+
+    setImages(prev => [...prev, ...newImages]);
     newImages.forEach(file => {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreviews(prev => [...prev, e.target?.result as string]);
+      reader.onload = (ev) => {
+        setImagePreviews(prev => [...prev, ev.target?.result as string]);
       };
       reader.readAsDataURL(file);
     });
+    e.target.value = '';
   };
 
   const removeImage = (index: number) => {
@@ -295,8 +313,11 @@ export default function EditPropertyModal({ property, isOpen, onClose, onSave }:
           <div>
             <label className="block text-sm font-medium text-primary mb-2">
               {t('add_property.labels.images')}
+              <span className={`ml-2 text-xs font-normal ${imagePreviews.length >= MAX_IMAGES ? 'text-red-500' : 'text-secondary'}`}>
+                (nouvelles : {imagePreviews.length}/{MAX_IMAGES})
+              </span>
             </label>
-            
+
             {/* Images existantes */}
             {property.images && property.images.length > 0 && (
               <div className="mb-4">
@@ -323,10 +344,10 @@ export default function EditPropertyModal({ property, isOpen, onClose, onSave }:
             )}
 
             {/* Upload de nouvelles images */}
-            <div className="border-2 border-dashed border-primary rounded-lg p-6 text-center bg-gray-50">
+            <div className={`border-2 border-dashed rounded-lg p-6 text-center bg-gray-50 ${imagePreviews.length >= MAX_IMAGES ? 'border-red-300 opacity-60' : 'border-primary'}`}>
               <Upload className="h-12 w-12 text-primary mx-auto mb-4" />
               <p className="text-secondary mb-4">
-                {t('add_property.upload_description')}
+                {imagePreviews.length >= MAX_IMAGES ? `Limite de ${MAX_IMAGES} images atteinte.` : t('add_property.upload_description')}
               </p>
               <input
                 ref={fileInputRef}
@@ -335,12 +356,14 @@ export default function EditPropertyModal({ property, isOpen, onClose, onSave }:
                 accept="image/*"
                 onChange={handleImageUpload}
                 className="hidden"
+                disabled={imagePreviews.length >= MAX_IMAGES}
               />
               <Button
                 type="button"
                 variant="outline"
                 onClick={triggerFileInput}
-                className="border border-primary text-primary hover:bg-primary-50"
+                disabled={imagePreviews.length >= MAX_IMAGES}
+                className="border border-primary text-primary hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 {t('add_property.upload_button')}

@@ -12,7 +12,7 @@ interface PaginationProps {
   className?: string;
 }
 
-export const ITEMS_PER_PAGE = 12;
+export const ITEMS_PER_PAGE = 21;
 
 export default function Pagination({
   currentPage,
