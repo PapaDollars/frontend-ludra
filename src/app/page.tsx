@@ -1,10 +1,6 @@
-import HomePage from "@/views/home/page"
+import FeedPage from '@/views/feed/FeedPage';
 
-export default function HomeApp () {
-  return (
-    <main className="relative overflow-hidden">
-      <HomePage />
-      
-    </main>
-  )
+// V2.1 : l'accueil est le feed d'offres (dossier §1, décision structurante).
+export default function HomeApp() {
+  return <FeedPage filter="tous" />;
 }

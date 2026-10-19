@@ -1,41 +1,43 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
 
-// Import translation files
 import enTranslations from '@/language/en/translate.json';
 import frTranslations from '@/language/fr/translate.json';
 
-const resources = {
-  en: {
-    translation: enTranslations,
-  },
-  fr: {
-    translation: frTranslations,
-  },
-};
+export const LANGUAGES = ['fr', 'en'] as const;
+export type Language = (typeof LANGUAGES)[number];
 
+/** Clé localStorage de la langue choisie (compatible avec l'ancienne détection i18next). */
+export const LANGUAGE_STORAGE_KEY = 'i18nextLng';
+
+// Démarrage toujours en français (comme le rendu serveur) pour éviter les écarts d'hydratation ;
+// la langue préférée est appliquée après montage par I18nProvider.
 i18n
-  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources,
+    resources: {
+      en: { translation: enTranslations },
+      fr: { translation: frTranslations },
+    },
+    lng: 'fr',
     fallbackLng: 'fr',
-    debug: false, // Désactiver pour éviter les logs
-    
-    interpolation: {
-      escapeValue: false,
-    },
-    
-    detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
-      caches: ['localStorage'],
-    },
-
-    // Configuration pour éviter les re-renders
-    react: {
-      useSuspense: false,
-    },
+    supportedLngs: [...LANGUAGES],
+    interpolation: { escapeValue: false },
+    react: { useSuspense: false },
   });
+
+/** Langue préférée : choix enregistré, sinon langue du navigateur (anglais → en). */
+export function preferredLanguage(): Language {
+  try {
+    const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    if (saved === 'fr' || saved === 'en') return saved;
+  } catch { /* stockage indisponible */ }
+  return navigator.language?.toLowerCase().startsWith('en') ? 'en' : 'fr';
+}
+
+export function setLanguage(lng: Language) {
+  try { window.localStorage.setItem(LANGUAGE_STORAGE_KEY, lng); } catch { /* stockage indisponible */ }
+  i18n.changeLanguage(lng);
+}
 
 export default i18n;

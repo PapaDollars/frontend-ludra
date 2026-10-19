@@ -4,14 +4,14 @@ import { Inter } from 'next/font/google'
 import I18nProvider from '@/providers/I18n-provider'
 import './globals.css'
 import RootLayouter from '@/components/layout/RootLayout';
-import BackToTop from '@/components/common/_others/BackToTop'
+import BackToTop from '@/components/common/BackToTop'
 import AuthProvider from '@/providers/AuthProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Ludra-Home - Trouvez votre logement idéal',
-  description: 'Plateforme de location de chambres, appartements, studios et maisons',
+  title: { default: 'LUDRA — Immobilier, personnel et services', template: '%s · LUDRA' },
+  description: 'Logements, personnel de maison et prestataires au Cameroun : offres vérifiées, messagerie gratuite, contact direct sécurisé.',
 }
 
 export default function RootLayout({

@@ -1,9 +1,8 @@
-import DashboardAdminPage from "@/views/admin/dashboard/page";
+import type { Metadata } from 'next';
+import AdminDashboardPage from '@/views/admin/AdminDashboardPage';
 
+export const metadata: Metadata = { title: 'Back-office' };
 
-export default function DashboardAdminRoute() {
-
-  return (
-     <DashboardAdminPage />
-  );
+export default function Page() {
+  return <AdminDashboardPage />;
 }

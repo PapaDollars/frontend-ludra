@@ -2,21 +2,25 @@
 
 import { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import AppLayout from './AppLayout';
 import AuthLayout from './AuthLayout';
+import { AppShell } from '@/components/shell/AppShell';
 
 interface RootLayoutProps {
   children: ReactNode;
 }
 
+/** Coque selon la zone : authentification, back-office (layout dédié), ou site V2.1. */
 export default function RootLayout({ children }: RootLayoutProps) {
-  const pathname = usePathname();
-  
-  const isAuthPage = pathname?.startsWith('/auth');
+  const pathname = usePathname() ?? '';
 
-  if (isAuthPage) {
+  if (pathname.startsWith('/auth')) {
     return <AuthLayout>{children}</AuthLayout>;
   }
 
-  return <AppLayout>{children}</AppLayout>;
+  // Back-office : sa coque est posée par src/app/admin/layout.tsx
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) {
+    return <>{children}</>;
+  }
+
+  return <AppShell>{children}</AppShell>;
 }

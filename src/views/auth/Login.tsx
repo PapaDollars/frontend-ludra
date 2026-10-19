@@ -1,27 +1,34 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, getSession } from 'next-auth/react';
 import { setTokens } from '@/lib/api';
-import AnimatedBackground from '@/components/common/_others/AnimatedBackground';
-import LoginForm from '@/components/auth/LoginForm';
+import LoginForm from './components/LoginForm';
 import URL from '@/utilis/url/url_front';
 import { useSafeSession } from '@/hooks/useSafeSession';
 
 export default function LoginPage() {
   const { data: session, status } = useSafeSession();
   const router = useRouter();
+  const [notice, setNotice] = useState<string | null>(null);
+
+  // Lu après montage : évite une frontière Suspense pour useSearchParams.
+  useEffect(() => { setNotice(new URLSearchParams(window.location.search).get('message')); }, []);
 
   useEffect(() => {
     if (status !== 'authenticated') return;
     const role = session?.user?.role;
-    if (role === 'admin') {
+    // Retour vers la page d'origine (ex. "Enregistrer" sur le feed) — chemins internes uniquement.
+    const redirect = new URLSearchParams(window.location.search).get('redirect');
+    if (redirect && redirect.startsWith('/') && !redirect.startsWith('//') && !redirect.startsWith('/auth')) {
+      router.replace(redirect);
+    } else if (role === 'admin') {
       router.replace(URL.admin.dashboard);
     } else if (role === 'landlord') {
-      router.replace(URL.landlord.dashboard);
+      router.replace(URL.v2.account);
     } else {
-      router.replace(URL.app.dashboard);
+      router.replace(URL.v2.feed);
     }
   // status suffit — session est recréé à chaque poll NextAuth et causerait une boucle
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -50,19 +57,11 @@ export default function LoginPage() {
 
   if (status === 'loading') {
     return (
-      <main className="relative min-h-screen flex items-center justify-center p-4">
-        <AnimatedBackground />
-        <div className="z-10 text-white">Chargement...</div>
-      </main>
+      <p className="text-sm text-slate-500">Chargement…</p>
     );
   }
 
   return (
-    <main className="relative min-h-screen flex items-center justify-center p-4">
-      <AnimatedBackground />
-      <div className="z-10 w-full max-w-lg">
-        <LoginForm onSuccess={handleSuccess} />
-      </div>
-    </main>
+    <LoginForm onSuccess={handleSuccess} notice={notice} />
   );
 }

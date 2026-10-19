@@ -1,5 +1,19 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
+/** Erreur HTTP de l'API : conserve le statut et le code métier éventuel. */
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+    public code?: string,
+    /** Erreurs de validation détaillées renvoyées par l'API (ex. 422). */
+    public errors?: { field?: string; path?: string; msg?: string; message?: string }[],
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
 const getToken = (): string | null => {
   if (typeof window === 'undefined') return null;
   return localStorage.getItem('accessToken');
@@ -107,9 +121,9 @@ async function request<T = any>(
     const errorData = await response.json();
     if (errorData.code === 'ACCOUNT_DISABLED') {
       forceSignOut();
-      throw new Error(errorData.message || 'Votre compte a été restreint. Déconnexion en cours…');
+      throw new ApiError(errorData.message || 'Votre compte a été restreint. Déconnexion en cours…', 403, errorData.code);
     }
-    throw new Error(errorData.message || 'Accès refusé.');
+    throw new ApiError(errorData.message || 'Accès refusé.', 403, errorData.code);
   }
 
   if (response.status === 401 && retry && auth) {
@@ -139,12 +153,24 @@ async function request<T = any>(
     // Si le backend renvoie des erreurs de validation détaillées, les inclure
     if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
       const details = data.errors.map((e: any) => e.msg || e.message || '').filter(Boolean).join(' • ');
-      throw new Error(details || data.message || `Erreur ${response.status}`);
+      throw new ApiError(details || data.message || `Erreur ${response.status}`, response.status, data.code, data.errors);
     }
-    throw new Error(data.message || `Erreur ${response.status}`);
+    throw new ApiError(data.message || `Erreur ${response.status}`, response.status, data.code);
   }
 
   return data;
+}
+
+/** Télécharge un fichier authentifié (ex. export CSV) sous forme de Blob. */
+export async function downloadBlob(endpoint: string): Promise<Blob> {
+  const token = getToken();
+  const res = await fetch(`${BASE_URL}${endpoint}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+  if (!res.ok) {
+    let message = `Erreur ${res.status}`;
+    try { message = (await res.json()).message ?? message; } catch { /* corps non JSON */ }
+    throw new ApiError(message, res.status);
+  }
+  return res.blob();
 }
 
 export const api = {

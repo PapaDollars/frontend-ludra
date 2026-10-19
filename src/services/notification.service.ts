@@ -1,34 +1,34 @@
 import api from '@/lib/api';
+import { toQuery, withMock } from '@/lib/mock';
+import { mockMarkAllNotificationsRead, mockMarkNotificationRead, mockNotifications } from '@/mocks/notifications.mock';
+import type { ApiResponse, NotificationPage } from '@/types';
 
-export interface Notification {
-  id: string;
-  type: 'property_approved' | 'property_rejected' | 'contact_request' | 'pending_property' | 'system';
-  title: string;
-  message: string;
-  propertyId?: string;
-  propertyTitle?: string;
-  contactName?: string;
-  contactPhone?: string;
-  contactEmail?: string;
-  isRead: boolean;
-  createdAt: string;
-}
-
+/** Centre de notifications — auth. Remplace les notifications V1 (/notifications). */
 export const notificationService = {
-  async getNotifications(unreadOnly = false) {
-    const res = await api.get(`/notifications${unreadOnly ? '?unreadOnly=true' : ''}`);
-    return res.data as { notifications: Notification[]; unreadCount: number };
+  /** GET /notifications?cursor=&limit= — plus récentes d'abord, avec le nombre de non lues. */
+  list(cursor: string | null = null, limit = 20) {
+    return withMock(
+      () => mockNotifications(cursor, limit),
+      async () => {
+        const qs = toQuery({ cursor, limit });
+        return (await api.get<ApiResponse<NotificationPage>>(`/notifications${qs ? `?${qs}` : ''}`)).data;
+      },
+    );
   },
 
-  async markAsRead(id: string) {
-    return api.patch(`/notifications/${id}/read`);
+  /** POST /notifications/:id/read */
+  markRead(id: string) {
+    return withMock(
+      () => mockMarkNotificationRead(id),
+      async () => { await api.post(`/notifications/${encodeURIComponent(id)}/read`); },
+    );
   },
 
-  async markAllAsRead() {
-    return api.patch('/notifications/read-all');
-  },
-
-  async deleteNotification(id: string) {
-    return api.delete(`/notifications/${id}`);
+  /** POST /notifications/read-all */
+  markAllRead() {
+    return withMock(
+      () => mockMarkAllNotificationsRead(),
+      async () => { await api.post(`/notifications/read-all`); },
+    );
   },
 };
