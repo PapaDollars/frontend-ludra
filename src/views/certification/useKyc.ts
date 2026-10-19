@@ -24,8 +24,11 @@ export function useKyc(enabled: boolean) {
   const inReview = dossier?.status === 'soumis' || dossier?.status === 'en_revue';
   useEffect(() => {
     if (!inReview) return;
-    const id = setInterval(refresh, POLL_MS);
-    return () => clearInterval(id);
+    // Uniquement onglet visible (dossier en revue = parfois plusieurs jours) ; mise à jour au retour
+    const id = setInterval(() => { if (document.visibilityState === 'visible') refresh(); }, POLL_MS);
+    const onVisible = () => { if (document.visibilityState === 'visible') refresh(); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => { clearInterval(id); document.removeEventListener('visibilitychange', onVisible); };
   }, [inReview, refresh]);
 
   const setProfile = useCallback(async (profile: KycProfile) => {

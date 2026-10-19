@@ -13,6 +13,22 @@ est livré avec la forme ci-dessous, on passe `NEXT_PUBLIC_USE_MOCKS=false`.
 - **Types TypeScript de référence : `src/types/`** — ils font foi en cas de doute.
 - Mocks de référence (exemples de réponses réalistes) : `src/mocks/`.
 
+## Règles de coût Firestore (forfait Spark : 50 000 lectures, 20 000 écritures / jour)
+
+Chaque document lu est facturé, même s'il est filtré ensuite dans le code. Dépassement = application bloquée jusqu'à minuit (heure du Pacifique).
+
+1. **Recherche / listes** (`/search`, `/feed`, `/saved`, `/me/items`, conversations, avis…) : filtrer avec `where` côté Firestore, `orderBy` + `limit(n + 1)` + `startAfter` (curseur = valeurs du dernier élément, pas un offset : `offset()` facture les documents sautés). Jamais `collection.get()` puis filtre en JavaScript.
+2. **Distance** : pas de requête de proximité native. Pré-filtrer par ville / quartier (ou geohash avec bornes) avant tout calcul de distance.
+3. **Compteurs** (`total`, `/search/count`, `/me/counters`, statistiques admin) : agrégation `query.count().get()` (1 lecture par tranche de 1 000), jamais `.size` sur une collection lue.
+4. **N+1** : pour enrichir une liste (publieur d'une annonce, profil d'un candidat), `db.getAll(...refs)` ou recopier dans le document les champs affichés (nom, avatar, badge vérifié).
+5. **Vues / clics** : au plus une écriture par visiteur, par objet et par jour (dédoublonnage mémoire côté serveur) + limite de débit sur la route.
+6. **Données qui changent rarement** (paramètres admin, plans, catégories de services, options de recherche) : cache mémoire avec durée de vie, vidé dans chaque route d'écriture correspondante.
+7. **Utilisateur connecté** : `req.user` est déjà chargé (cache 60 s, `backend-ludra/src/utils/userCache.js`) — ne pas relire `users/{id}`. Après toute écriture sur `users/{id}` : `invalidateUser(id)`.
+8. **Index composites** : à déclarer dans `backend-ludra/firestore.indexes.json` (déploiement : `firebase deploy --only firestore:indexes`).
+9. **Idempotence** : création avec id déterministe + `create()` (refus si l'id existe) ou clé `Idempotency-Key` (paiements), pour qu'un nouvel essai ne crée pas de doublon.
+
+Le front ne fait aucun appel de fond quand l'onglet est masqué (compteurs, messagerie, KYC) et ne lance la recherche qu'après un délai de saisie.
+
 ## Règles de sécurité non négociables
 
 1. Aucun numéro de téléphone / WhatsApp dans une réponse avant paiement `unlock_contact` confirmé par webhook (M04).

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { setTokens, api } from '@/lib/api';
 import { useSafeSession } from '@/hooks/useSafeSession';
 
-const POLL_INTERVAL_MS = 1_800_000; // vérifier toutes les 60 secondes
+const POLL_INTERVAL_MS = 1_800_000; // vérifier toutes les 30 minutes
 
 export default function TokenSyncProvider({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSafeSession();
