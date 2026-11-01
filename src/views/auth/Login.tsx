@@ -45,6 +45,9 @@ export default function LoginPage() {
       if (result.error.startsWith('ACCOUNT_DISABLED:')) {
         throw new Error(result.error.replace('ACCOUNT_DISABLED:', ''));
       }
+      if (result.error === 'SERVER_UNAVAILABLE') {
+        throw new Error('Le serveur ne répond pas pour le moment (il peut mettre jusqu\'à une minute à démarrer). Réessayez dans un instant.');
+      }
       throw new Error('Email/téléphone ou mot de passe incorrect');
     }
 

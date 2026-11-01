@@ -12,10 +12,10 @@ import { useRole } from '@/hooks/useRole';
 import { useCounters } from '@/hooks/useCounters';
 import { useLogout } from '@/hooks/useLogout';
 import { Logo } from './Logo';
+import { MobileMenu } from './MobileMenu';
 import { TOP_TABS, isActive } from './navigation';
 import { UserAvatar } from '@/components/ui/UserAvatar';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
-import { LanguageSwitcher } from './LanguageSwitcher';
 
 function CountBadge({ count }: { count: number }) {
   if (count <= 0) return null;
@@ -63,6 +63,7 @@ export function TopBar() {
   return (
     <header className="print:hidden fixed top-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200">
       <div className="mx-auto max-w-[1320px] h-14 md:h-16 px-4 flex items-center gap-3 lg:gap-6">
+        <MobileMenu isAuthenticated={isAuthenticated} />
         <Logo />
 
         {/* Recherche globale — tablette & desktop */}
@@ -118,7 +119,6 @@ export function TopBar() {
             </>
           )}
 
-          {!isLoading && !isAuthenticated && <LanguageSwitcher className="hidden lg:inline-flex" />}
           {!isLoading && !isAuthenticated && (
             <Link href={URL.auth.login} className="hidden md:inline-flex h-9 px-4 items-center rounded-lg border border-slate-200 text-sm font-medium text-navy hover:bg-surface">
               {t('shell.top.login')}

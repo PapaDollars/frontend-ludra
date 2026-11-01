@@ -107,7 +107,11 @@
       "account": "Mon compte",
       "certification": "Certification",
       "backoffice": "Back-office",
-      "logout": "Déconnexion"
+      "logout": "Déconnexion",
+      "open": "Ouvrir le menu",
+      "close": "Fermer le menu",
+      "title": "Menu",
+      "signup": "Créer un compte"
     },
     "footer": {
       "about": "À propos",

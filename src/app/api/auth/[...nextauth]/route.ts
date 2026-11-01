@@ -33,6 +33,12 @@ const authOptions = {
             throw new Error('ACCOUNT_DISABLED:' + (data.message || 'Votre compte a été restreint.'));
           }
 
+          // Erreur serveur (variable manquante, Firestore indisponible…) : ne pas la faire passer pour un mauvais mot de passe
+          if (res.status >= 500) {
+            console.error('[NextAuth] Erreur serveur au login:', res.status, data?.message);
+            throw new Error('SERVER_UNAVAILABLE');
+          }
+
           if (!res.ok || !data.success) {
             console.error('[NextAuth] Login échoué:', res.status, data?.message);
             return null;
@@ -54,8 +60,10 @@ const authOptions = {
             refreshToken: data.data.refreshToken,
           };
         } catch (err) {
+          // Messages destinés à l'écran de connexion : on les laisse passer
+          if (err instanceof Error && (err.message.startsWith('ACCOUNT_DISABLED:') || err.message === 'SERVER_UNAVAILABLE')) throw err;
           console.error('[NextAuth] Erreur réseau vers le backend:', err);
-          return null;
+          throw new Error('SERVER_UNAVAILABLE'); // backend injoignable (ex. en cours de réveil)
         }
       },
     }),

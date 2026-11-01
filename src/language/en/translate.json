@@ -31,7 +31,11 @@
       "account": "My account",
       "certification": "Verification",
       "backoffice": "Back office",
-      "logout": "Log out"
+      "logout": "Log out",
+      "open": "Open menu",
+      "close": "Close menu",
+      "title": "Menu",
+      "signup": "Sign up"
     },
     "footer": {
       "about": "About",
