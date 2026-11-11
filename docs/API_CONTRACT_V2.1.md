@@ -1,8 +1,9 @@
 # LUDRA HOME V2.1 — Contrat API (frontend ⇄ backend)
 
-Ce document liste les endpoints **attendus par le frontend**. Le front tourne
-aujourd'hui sur des mocks (`NEXT_PUBLIC_USE_MOCKS` ≠ `false`). Dès qu'un endpoint
-est livré avec la forme ci-dessous, on passe `NEXT_PUBLIC_USE_MOCKS=false`.
+Ce document liste les endpoints **attendus par le frontend**. Le front tourne en mode
+mixte (`NEXT_PUBLIC_USE_MOCKS=mixed`) : les routes déjà livrées appellent le backend, les
+autres utilisent les mocks. Dès qu'un endpoint est livré avec la forme ci-dessous, on
+l'ajoute à `src/lib/liveEndpoints.ts` ; quand tout est livré, `NEXT_PUBLIC_USE_MOCKS=false`.
 
 - Base : `NEXT_PUBLIC_API_URL` (ex. `http://localhost:5000/api`).
 - Tous les endpoints sont montés directement sous **`/api`** (pas de préfixe de version). Les routes V1 qui avaient le même chemin ont été remplacées et les routes V1 inutilisées supprimées (voir étape 12).

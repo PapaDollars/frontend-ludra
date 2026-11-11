@@ -9,6 +9,8 @@ import { cn } from '@/utilis/utils';
 import URL from '@/utilis/url/url_front';
 import { formatClock } from '@/utilis/format';
 import { ApiError } from '@/lib/api';
+import { API_MODE } from '@/lib/mock';
+import { isLiveUniverse, isMockId } from '@/lib/liveEndpoints';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { hasPermission } from '@/lib/adminPermissions';
 import { publishService } from '@/services/publish.service';
@@ -141,8 +143,13 @@ export default function PublishPage() {
       return;
     }
     try {
-      if (!draft.id) {
-        const created = await pd.create(type, onBehalfOf);
+      // Mode mixte : un brouillon reste sur la source qui l'a créé (backend ou démo). Si le nouveau type est servi
+      // par l'autre source, on recrée le brouillon de ce côté avec les données déjà saisies.
+      const switchSource = API_MODE === 'mixed' && Boolean(draft.id) && type !== draft.type && isMockId(draft.id) === isLiveUniverse(type);
+      if (!draft.id || switchSource) {
+        const previousId = switchSource ? draft.id : null;
+        const created = await pd.create(type, draft.onBehalfOf ?? onBehalfOf);
+        if (previousId) publishService.deleteDraft(previousId).catch(() => { /* ancien brouillon : sans conséquence */ });
         router.replace(`${URL.v2.publish}?draft=${created.id}`, { scroll: false });
         setStep(1);
       } else {

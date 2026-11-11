@@ -1,4 +1,8 @@
+import { isLiveEndpoint, NotLiveError } from './liveEndpoints';
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+/** Mode mixte : seules les routes livrées par le backend partent sur le réseau (voir lib/mock.ts). */
+const MIXED = process.env.NEXT_PUBLIC_USE_MOCKS === 'mixed';
 
 /** Erreur HTTP de l'API : conserve le statut et le code métier éventuel. */
 export class ApiError extends Error {
@@ -99,6 +103,8 @@ async function request<T = any>(
   options: RequestOptions = {}
 ): Promise<T> {
   const { auth = true, retry = true, ...fetchOptions } = options;
+  const method = (fetchOptions.method ?? 'GET').toUpperCase();
+  if (MIXED && !isLiveEndpoint(method, endpoint, fetchOptions.body)) throw new NotLiveError(method, endpoint);
 
   const headers: Record<string, string> = {
     ...(fetchOptions.body && !(fetchOptions.body instanceof FormData)
@@ -163,6 +169,7 @@ async function request<T = any>(
 
 /** Télécharge un fichier authentifié (ex. export CSV) sous forme de Blob. */
 export async function downloadBlob(endpoint: string): Promise<Blob> {
+  if (MIXED && !isLiveEndpoint('GET', endpoint)) throw new NotLiveError('GET', endpoint);
   const token = getToken();
   const res = await fetch(`${BASE_URL}${endpoint}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
   if (!res.ok) {

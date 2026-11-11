@@ -35,13 +35,21 @@ export function useConversations(enabled: boolean, query: string) {
   }, [enabled, refresh]);
 
   /** Mise à jour locale immédiate (lu, dernier message envoyé, blocage…). */
+  const listRef = useRef<Conversation[] | null>(null);
+  listRef.current = conversations;
+
   const patch = useCallback((id: string, p: Partial<Conversation>) => {
+    // Conversation absente de la liste (ex. premier message : le serveur ne liste que les conversations non vides)
+    if (p.lastMessage && listRef.current && !listRef.current.some((c) => c.id === id)) {
+      refresh();
+      return;
+    }
     setConversations((prev) => {
       if (!prev) return prev;
       const next = prev.map((c) => (c.id === id ? { ...c, ...p } : c));
       return next.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
     });
-  }, []);
+  }, [refresh]);
 
   return { conversations, error, refresh, patch };
 }
