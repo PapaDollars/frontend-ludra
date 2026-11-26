@@ -60,7 +60,7 @@ export function mockCandidateDetail(id: string, authenticated: boolean): Candida
     ...EXTRA[id],
     badges: { identityVerified: c.publisher.verified, trained: c.trained },
     viewerAccess: {
-      canContact: access.rights.contact,
+      canContact: authenticated, // messagerie gratuite : aucun forfait requis
       canShortlist: access.rights.shortlist,
       shortlisted: shortlist.get().some((e) => e.candidate.id === id),
       ...(!authenticated ? { reason: 'login' as const } : !access.planCode ? { reason: 'no_plan' as const } : {}),

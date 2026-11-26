@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Flag, ListPlus, ListChecks, Lock, MessageCircle, Rocket } from 'lucide-react';
+import { ArrowLeft, Flag, ListPlus, ListChecks, MessageCircle, Rocket } from 'lucide-react';
 
 import URL from '@/utilis/url/url_front';
 import { formatAmount } from '@/utilis/format';
@@ -65,7 +65,7 @@ export default function CandidatePage({ id }: { id: string }) {
   const access = c.viewerAccess;
 
   const onContact = () => {
-    if (!access.canContact) return setGateOpen(true);
+    if (!access.canContact) return router.push(URL.auth.loginThen(URL.v2.candidate(id)));
     router.push(`${URL.v2.messages}?to=${c.publisher.id}&item=${c.id}`);
   };
 
@@ -121,7 +121,7 @@ export default function CandidatePage({ id }: { id: string }) {
             ) : (
               <div className="flex flex-col sm:items-end gap-2">
                 <button type="button" onClick={onContact} className="h-10 px-4 inline-flex items-center justify-center gap-1.5 rounded-lg bg-brand text-white text-sm font-semibold">
-                  {access.canContact ? <MessageCircle className="w-4 h-4" /> : <Lock className="w-4 h-4" />} Contacter
+                  <MessageCircle className="w-4 h-4" /> Contacter
                 </button>
                 <button type="button" onClick={onShortlist} disabled={busy} aria-pressed={access.shortlisted}
                   className="h-10 px-4 inline-flex items-center justify-center gap-1.5 rounded-lg border border-brand text-brand text-sm font-semibold disabled:opacity-60">
@@ -173,8 +173,8 @@ export default function CandidatePage({ id }: { id: string }) {
       <Modal
         open={gateOpen}
         onOpenChange={setGateOpen}
-        title="Réservé aux recruteurs"
-        description="Le contact et la présélection sont ouverts avec un forfait recruteur."
+        title="Présélection réservée aux recruteurs"
+        description="La présélection (shortlist) est ouverte avec un forfait recruteur. Le contact reste gratuit."
         footer={access.reason === 'login' ? (
           <Link href={URL.auth.loginThen(URL.v2.candidate(id))} className="flex h-11 items-center justify-center rounded-lg bg-brand text-white text-sm font-semibold">Se connecter</Link>
         ) : (
@@ -182,7 +182,7 @@ export default function CandidatePage({ id }: { id: string }) {
         )}
       >
         <p className="text-sm text-slate-600">
-          Les profils restent consultables gratuitement. Un forfait (à partir de 5 000 F) ouvre l&apos;accès aux meilleurs profils, à la shortlist et au contact.
+          Les profils restent consultables gratuitement. Un forfait (à partir de 5 000 F) ouvre l&apos;accès aux meilleurs profils et à la shortlist. Contacter un candidat est gratuit.
         </p>
       </Modal>
       <ReportDialog open={reportOpen} onOpenChange={setReportOpen} targetType="user" targetId={c.publisher.id} onDone={() => showToast('Merci, votre signalement a été transmis')} />

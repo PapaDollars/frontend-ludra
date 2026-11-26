@@ -61,7 +61,7 @@ export default function ShortlistPage() {
         {!canUse ? (
           <div className="mx-4 md:mx-0 rounded-2xl bg-white border border-slate-200 p-8 text-center">
             <p className="font-semibold text-navy mb-1">La shortlist est réservée aux forfaits recruteurs</p>
-            <p className="text-sm text-slate-500 mb-4">Activez un forfait pour présélectionner et contacter les candidats.</p>
+            <p className="text-sm text-slate-500 mb-4">Activez un forfait pour présélectionner des candidats. Les contacter reste gratuit.</p>
             <Link href={URL.v2.recruiterPlans} className="inline-flex h-10 px-5 items-center rounded-lg bg-brand text-white text-sm font-semibold">Voir les forfaits</Link>
           </div>
         ) : entries === null ? (

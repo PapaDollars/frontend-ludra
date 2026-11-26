@@ -35,7 +35,7 @@ function RecruiterCard({ planName, shortlistCount }: { planName: string | null; 
       <h2 className="font-semibold text-navy mb-1">Pour recruteurs</h2>
       {planName ? (
         <>
-          <p className="text-xs text-slate-500 mb-3">Forfait <strong className="text-navy">{planName}</strong> actif : contact et présélection ouverts.</p>
+          <p className="text-xs text-slate-500 mb-3">Forfait <strong className="text-navy">{planName}</strong> actif : présélection ouverte (le contact est gratuit).</p>
           <Link href={URL.v2.shortlist} className="flex h-9 items-center justify-center gap-1.5 rounded-lg bg-brand text-white text-sm font-semibold">
             <ListChecks className="w-4 h-4" /> Ma shortlist ({shortlistCount})
           </Link>
